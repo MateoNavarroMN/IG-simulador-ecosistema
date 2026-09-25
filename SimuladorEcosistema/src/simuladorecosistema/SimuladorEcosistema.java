@@ -6,7 +6,7 @@ package simuladorecosistema;
 
 /**
  *
- * @author Caraxess
+ * @author 
  */
 public class SimuladorEcosistema {
 
