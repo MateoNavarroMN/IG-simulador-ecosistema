@@ -47,13 +47,13 @@ public class Ecosistema {
         this.nuevosConejosTurno = new ArrayList<>();
     }
 
-    // SOBRECARGA 1: Sin energía inicial
+    // SOBRECARGA 1: Sin energia inicial
     public boolean agregarEntidad(String tipo) {
         double energiaAleatoria = 45.0 + (Math.random() * 30.0);
         return agregarEntidad(tipo, energiaAleatoria);
     }
 
-    // SOBRECARGA 2: Con energía inicial
+    // SOBRECARGA 2: Con energia inicial
     public boolean agregarEntidad(String tipo, double energiaInicial) {
         if (tipo == null) {
             return false;
@@ -77,8 +77,8 @@ public class Ecosistema {
 
             case "lobo":
                 if (totalLobosCreados >= MAX_LOBOS_SIMULACION) {
-                    System.out.println("[!] No se pueden agregar más lobos. Límite máximo de "
-                            + MAX_LOBOS_SIMULACION + " alcanzado en toda la simulación.");
+                    System.out.println("[!] No se pueden agregar mas lobos. Limite maximo de "
+                            + MAX_LOBOS_SIMULACION + " alcanzado en toda la simulacion.");
                     return false;
                 }
                 totalLobosCreados++;
@@ -87,13 +87,13 @@ public class Ecosistema {
                 return true;
 
             default:
-                System.out.println("[!] Tipo de entidad inválido: " + tipo);
+                System.out.println("[!] Tipo de entidad invalido: " + tipo);
                 return false;
         }
     }
 
     // =========================================================================
-    // MOTOR DE SIMULACIÓN POR TURNO (Integrante 4)
+    // MOTOR DE SIMULACION POR TURNO (Integrante 4)
     // =========================================================================
     public void procesarTurno() {
         turnoActual++;
@@ -110,14 +110,14 @@ public class Ecosistema {
         int conejosVivosInicio = contarConejosVivos();
         int lobosVivosInicio = contarLobosVivos();
 
-        // 1. Actúan las plantas (ganan energía por clima y se reproducen)
+        // 1. Actuan las plantas (ganan energia por clima y se reproducen)
         for (Planta p : plantas) {
             if (p.isViva()) {
                 p.actuar(this);
             }
         }
 
-        // 2. Actúan los conejos (buscan plantas para comer e intentan reproducirse)
+        // 2. Actuan los conejos (buscan plantas para comer e intentan reproducirse)
         for (Conejo c : conejos) {
             if (c.isViva()) {
                 c.actuar(this);
@@ -129,20 +129,20 @@ public class Ecosistema {
         reproducibles.addAll(plantas);
         reproducibles.addAll(conejos);
         for (Reproducible r : reproducibles) {
-            // Si alguna entidad aún conserva energía extra suficiente tras su acción, evalúa reproducción
+            // Si alguna entidad aun conserva energia extra suficiente tras su accion, evalua reproduccion
             if (r.puedeReproducirse() && Math.random() < 0.15) {
                 r.intentarReproduccion(this);
             }
         }
 
-        // 3. Actúan los lobos (intentan cazar un conejo según probabilidad por energía)
+        // 3. Actuan los lobos (intentan cazar un conejo segun probabilidad por energia)
         for (Lobo l : lobos) {
             if (l.isViva()) {
                 l.actuar(this);
             }
         }
 
-        // 4 y 5. Envejecimiento, gasto de energía base y verificación de muerte polimórfica (Mortal)
+        // 4 y 5. Envejecimiento, gasto de energia base y verificacion de muerte polimorfica (Mortal)
         ArrayList<Mortal> mortales = new ArrayList<>();
         mortales.addAll(plantas);
         mortales.addAll(conejos);
@@ -152,17 +152,17 @@ public class Ecosistema {
             if (m.estaVivo() && m instanceof Entidad) {
                 Entidad ent = (Entidad) m;
                 ent.envejecer();
-                // Si la energía llegó a 0 al envejecer, reactivamos temporalmente el flag
-                // para que el método default verificarMuerte() de Mortal procese e imprima la baja
+                // Si la energia llego a 0 al envejecer, reactivamos temporalmente el flag
+                // para que el metodo default verificarMuerte() de Mortal procese e imprima la baja
                 if (ent.getEnergia() <= 0) {
                     ent.setViva(true);
-                    eventosTurnoActual.add(ent.getNombre() + " murió de inanición / agotamiento");
+                    eventosTurnoActual.add(ent.getNombre() + " murio de inanicion / agotamiento");
                 }
             }
         }
 
         System.out.println("-- Eventos --");
-        // Uso del método default verificarMuerte() de la interface Mortal
+        // Uso del metodo default verificarMuerte() de la interface Mortal
         for (Mortal m : mortales) {
             if (m.estaVivo() && m.getEnergia() <= 0) {
                 m.verificarMuerte();
@@ -177,7 +177,7 @@ public class Ecosistema {
             }
         }
 
-        // Contabilizar bajas del turno antes de incorporar a los recién nacidos
+        // Contabilizar bajas del turno antes de incorporar a los recien nacidos
         muertesPlantas += Math.max(0, plantasVivasInicio - contarPlantasVivas());
         muertesConejos += Math.max(0, conejosVivosInicio - contarConejosVivos());
         muertesLobos += Math.max(0, lobosVivosInicio - contarLobosVivos());
@@ -198,7 +198,7 @@ public class Ecosistema {
 
     public void generarReporteFinal() {
         System.out.println("\n==================================================");
-        System.out.println("          REPORTE FINAL DE LA SIMULACIÓN          ");
+        System.out.println("           REPORTE FINAL DE LA SIMULACION         ");
         System.out.println("==================================================");
 
         // 1. Causa de fin
@@ -207,17 +207,17 @@ public class Ecosistema {
             if (contarPlantasVivas() == 0) extintas.add("Plantas");
             if (contarConejosVivos() == 0) extintas.add("Conejos");
             if (contarLobosVivos() == 0) extintas.add("Lobos");
-            System.out.println("• Causa de fin: Colapso del ecosistema en el turno " + turnoActual
+            System.out.println("Causa de fin: Colapso del ecosistema en el turno " + turnoActual
                     + " (Se extinguieron: " + String.join(", ", extintas) + ").");
         } else {
-            System.out.println("• Causa de fin: Se completaron los " + turnosTotales + " turnos configurados.");
+            System.out.println("Causa de fin: Se completaron los " + turnosTotales + " turnos configurados.");
         }
 
         // 2. Turno de mayor actividad
-        System.out.println("• Turno de mayor actividad: Turno " + turnoMayorActividad
+        System.out.println("Turno de mayor actividad: Turno " + turnoMayorActividad
                 + " (" + maxEventosTurno + " eventos registrados).");
 
-        // 3. Entidad más longeva de cada tipo
+        // 3. Entidad mas longeva de cada tipo
         Planta plantaMasLongeva = null;
         for (Planta p : plantas) {
             if (plantaMasLongeva == null || p.getEdad() > plantaMasLongeva.getEdad()) {
@@ -239,15 +239,15 @@ public class Ecosistema {
             }
         }
 
-        System.out.println("\n--- ENTIDADES MÁS LONGEVAS ---");
-        System.out.println("• Planta más longeva : " + (plantaMasLongeva != null
+        System.out.println("\n--- ENTIDADES MAS LONGEVAS ---");
+        System.out.println("Planta mas longeva : " + (plantaMasLongeva != null
                 ? plantaMasLongeva.getNombre() + " (" + plantaMasLongeva.getEdad() + " turnos)" : "N/A"));
-        System.out.println("• Conejo más longevo : " + (conejoMasLongevo != null
+        System.out.println("Conejo mas longevo : " + (conejoMasLongevo != null
                 ? conejoMasLongevo.getNombre() + " (" + conejoMasLongevo.getEdad() + " turnos)" : "N/A"));
-        System.out.println("• Lobo más longevo   : " + (loboMasLongevo != null
+        System.out.println("Lobo mas longevo   : " + (loboMasLongevo != null
                 ? loboMasLongevo.getNombre() + " (" + loboMasLongevo.getEdad() + " turnos)" : "N/A"));
 
-        // 4. Lobo con más cacerías exitosas
+        // 4. Lobo con mas cacerias exitosas
         Lobo mejorCazador = null;
         for (Lobo l : lobos) {
             if (mejorCazador == null || l.getExitosCaza() > mejorCazador.getExitosCaza()) {
@@ -256,19 +256,19 @@ public class Ecosistema {
         }
         System.out.println("\n--- MEJOR DEPREDADOR ---");
         if (mejorCazador != null) {
-            System.out.println("• Lobo con más cacerías exitosas: " + mejorCazador.getNombre()
-                    + " (" + mejorCazador.getExitosCaza() + " cacerías).");
+            System.out.println("• Lobo con mas cacerias exitosas: " + mejorCazador.getNombre()
+                    + " (" + mejorCazador.getExitosCaza() + " cacerias).");
         } else {
-            System.out.println("• Lobo con más cacerías exitosas: Sin registros.");
+            System.out.println("• Lobo con mas cacerias exitosas: Sin registros.");
         }
 
         // 5. Total de nacimientos y muertes por tipo
-        System.out.println("\n--- BALANCE DEMOGRÁFICO TOTAL ---");
-        System.out.println("• Plantas -> Nacimientos: " + nacimientosPlantas + " | Muertes: " + muertesPlantas
+        System.out.println("\n--- BALANCE DEMOGRAFICO TOTAL ---");
+        System.out.println("Plantas -> Nacimientos: " + nacimientosPlantas + " | Muertes: " + muertesPlantas
                 + " | Vivas al final: " + contarPlantasVivas());
-        System.out.println("• Conejos -> Nacimientos: " + nacimientosConejos + " | Muertes: " + muertesConejos
+        System.out.println("Conejos -> Nacimientos: " + nacimientosConejos + " | Muertes: " + muertesConejos
                 + " | Vivos al final: " + contarConejosVivos());
-        System.out.println("• Lobos   -> Nacimientos: 0 (no se reproducen) | Muertes: " + muertesLobos
+        System.out.println("Lobos   -> Nacimientos: 0 (no se reproducen) | Muertes: " + muertesLobos
                 + " | Vivos al final: " + contarLobosVivos());
         System.out.println("==================================================");
     }

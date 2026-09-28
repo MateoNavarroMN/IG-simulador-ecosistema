@@ -14,7 +14,7 @@ public class Conejo extends Animal implements Reproducible {
         super(nombre, energia, edad, viva, velocidad, peso);
     }
     
-    // Constructor abreviado para nacimientos o creación rápida
+    // Constructor abreviado para nacimientos o creacion rapida
     public Conejo(String nombre, double energia) {
         this(nombre, energia, 0, true, 12, 2.5);
     }
@@ -26,16 +26,16 @@ public class Conejo extends Animal implements Reproducible {
         }
         this.ecosistemaRef = eco;
 
-        // Efecto del clima sobre la energía base del conejo
+        // Efecto del clima sobre la energia base del conejo
         double ajusteClima = eco.getClimaActual().getCambioEnergiaConejo();
         if (ajusteClima != 0) {
             this.setEnergia(this.getEnergia() + ajusteClima);
         }
 
-        //Llama a comer()
+        // Llama a comer()
         this.comer(eco);
 
-        //Intenta reproducirse si sigue con vida
+        // Intenta reproducirse si sigue con vida
         if (this.isViva()) {
             this.intentarReproduccion(eco);
         }
@@ -53,10 +53,10 @@ public class Conejo extends Animal implements Reproducible {
             this.setEnergia(this.getEnergia() + ganancia);
 
             if (ganancia >= 0) {
-                eco.registrarEvento("Conejo '" + this.getNombre() + "' comió '" 
+                eco.registrarEvento("Conejo '" + this.getNombre() + "' comio '" 
                         + plantaEncontrada.getNombre() + "' (+" + (int) ganancia + " energia)");
             } else {
-                eco.registrarEvento("Conejo '" + this.getNombre() + "' comió planta venenosa '" 
+                eco.registrarEvento("Conejo '" + this.getNombre() + "' comio planta venenosa '" 
                         + plantaEncontrada.getNombre() + "' (" + (int) ganancia + " energia)");
             }
         } else {
@@ -64,7 +64,7 @@ public class Conejo extends Animal implements Reproducible {
             String alertaPeligro = (this.getEnergia() > 0 && this.getEnergia() < UMBRAL_PELIGRO)
                     ? " [PELIGRO: energia=" + (int) this.getEnergia() + "]"
                     : "";
-            eco.registrarEvento("Conejo '" + this.getNombre() + "' no encontró comida (-" 
+            eco.registrarEvento("Conejo '" + this.getNombre() + "' no encontro comida (-" 
                     + (int) PERDIDA_POR_HAMBRE + " energia)" + alertaPeligro);
         }
     }
@@ -84,14 +84,14 @@ public class Conejo extends Animal implements Reproducible {
         Conejo cria = new Conejo(nombreCria, ENERGIA_CRIA);
 
         eco.agregarConejoHijo(cria);
-        eco.registrarEvento("Conejo '" + this.getNombre() + "' tuvo una cría -> nuevo conejo '" 
+        eco.registrarEvento("Conejo '" + this.getNombre() + "' tuvo una cria -> nuevo conejo '" 
                 + nombreCria + "' (energia: " + (int) ENERGIA_CRIA + ")");
     }
 
     @Override
     public void mostrarEstado() {
         String estadoPeligro = (this.isViva() && this.getEnergia() < UMBRAL_PELIGRO) ? " [EN PELIGRO]" : "";
-        System.out.println("Conejo [" + getNombre() + "] | Energía: " + (int) getEnergia() 
-                + estadoPeligro + " | Vivo: " + (isViva() ? "Sí" : "No"));
+        System.out.println("Conejo [" + getNombre() + "] | Energia: " + (int) getEnergia() 
+                + estadoPeligro + " | Vivo: " + (isViva() ? "Si" : "No"));
     }
 }

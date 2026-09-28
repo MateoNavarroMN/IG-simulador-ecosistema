@@ -37,11 +37,11 @@ public class Lobo extends Animal {
         Conejo presa = eco.obtenerConejoVivoAleatorio();
 
         if (presa == null) {
-            eco.registrarEvento("Lobo '" + this.getNombre() + "' buscó presas pero no quedan conejos vivos.");
+            eco.registrarEvento("Lobo '" + this.getNombre() + "' busco presas pero no quedan conejos vivos.");
             return;
         }
 
-        // La probabilidad aumenta dinámicamente con la energía del lobo (entre 15% y 80% base)
+        // La probabilidad aumenta dinamicamente con la energia del lobo (entre 15% y 80% base)
         double probBase = Math.min(0.80, Math.max(0.15, this.getEnergia() / 100.0));
         double probFinal = Math.min(0.95, probBase + eco.getClimaActual().getBonusExitoCazaLobo());
 
@@ -49,18 +49,18 @@ public class Lobo extends Animal {
             presa.morir();
             this.setEnergia(this.getEnergia() + GANANCIA_POR_CAZA);
             this.exitosCaza++;
-            eco.registrarEvento("Lobo '" + this.getNombre() + "' cazó a Conejo '" + presa.getNombre() 
-                    + "' (+" + (int) GANANCIA_POR_CAZA + " energia) [cacerías: " + this.exitosCaza + "]");
+            eco.registrarEvento("Lobo '" + this.getNombre() + "' cazo a Conejo '" + presa.getNombre() 
+                    + "' (+" + (int) GANANCIA_POR_CAZA + " energia) [cacerias: " + this.exitosCaza + "]");
         } else {
             this.setEnergia(this.getEnergia() - COSTO_INTENTO_FALLIDO);
-            eco.registrarEvento("Lobo '" + this.getNombre() + "' falló la caza");
+            eco.registrarEvento("Lobo '" + this.getNombre() + "' fallo la caza");
         }
     }
 
     @Override
     public void mostrarEstado() {
-        System.out.println("Lobo [" + getNombre() + "] | Energía: " + (int) getEnergia() 
-                + " | Cacerías exitosas: " + exitosCaza + " | Vivo: " + (isViva() ? "Sí" : "No"));
+        System.out.println("Lobo [" + getNombre() + "] | Energia: " + (int) getEnergia() 
+                + " | Cacerias exitosas: " + exitosCaza + " | Vivo: " + (isViva() ? "Si" : "No"));
     }
 
     public int getExitosCaza() {

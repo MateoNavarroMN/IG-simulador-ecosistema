@@ -3,7 +3,7 @@ package simuladorecosistema;
 public enum Clima {
     SOLEADO("Soleado", 1.5, 5.0, 0.0, 0.0),
     LLUVIOSO("Lluvioso", 2.0, 3.0, -5.0, 0.0),
-    SEQUIA("Sequía", 0.5, -5.0, 0.0, 0.0),
+    SEQUIA("Sequia", 0.5, -5.0, 0.0, 0.0),
     INVIERNO("Invierno", 0.0, -8.0, 0.0, 0.20);
  
     private final String nombre;
