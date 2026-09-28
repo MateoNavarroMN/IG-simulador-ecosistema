@@ -18,9 +18,10 @@ public class Ecosistema {
     private int muertesPlantas;
     private int muertesConejos;
     private int muertesLobos;
-    private ArrayList<String> eventosTurnoActual;
+    private int turnoMayorActividad;
+    private int maxEventosTurno;
 
-    // Listas auxiliares para nacimientos durante un turno
+    private ArrayList<String> eventosTurnoActual;
     private ArrayList<Planta> nuevasPlantasTurno;
     private ArrayList<Conejo> nuevosConejosTurno;
 
@@ -39,18 +40,20 @@ public class Ecosistema {
         this.muertesPlantas = 0;
         this.muertesConejos = 0;
         this.muertesLobos = 0;
+        this.turnoMayorActividad = 1;
+        this.maxEventosTurno = 0;
         this.eventosTurnoActual = new ArrayList<>();
         this.nuevasPlantasTurno = new ArrayList<>();
         this.nuevosConejosTurno = new ArrayList<>();
     }
 
-    // SOBRECARGA 1: Sin energía inicial (asigna energía aleatoria entre 45 y 75)
+    // SOBRECARGA 1: Sin energía inicial
     public boolean agregarEntidad(String tipo) {
         double energiaAleatoria = 45.0 + (Math.random() * 30.0);
         return agregarEntidad(tipo, energiaAleatoria);
     }
 
-    // SOBRECARGA 2: Con energía inicial especificada
+    // SOBRECARGA 2: Con energía inicial
     public boolean agregarEntidad(String tipo, double energiaInicial) {
         if (tipo == null) {
             return false;
@@ -74,7 +77,7 @@ public class Ecosistema {
 
             case "lobo":
                 if (totalLobosCreados >= MAX_LOBOS_SIMULACION) {
-                    System.out.println("[!] No se pueden agregar más lobos. Límite máximo de " 
+                    System.out.println("[!] No se pueden agregar más lobos. Límite máximo de "
                             + MAX_LOBOS_SIMULACION + " alcanzado en toda la simulación.");
                     return false;
                 }
@@ -89,13 +92,120 @@ public class Ecosistema {
         }
     }
 
+    // =========================================================================
+    // MOTOR DE SIMULACIÓN POR TURNO (Integrante 4)
+    // =========================================================================
+    public void procesarTurno() {
+        turnoActual++;
+        eventosTurnoActual.clear();
+        nuevasPlantasTurno.clear();
+        nuevosConejosTurno.clear();
+
+        System.out.println("\n=== TURNO " + turnoActual + " | Clima: " + climaActual.getNombre() + " ===");
+        System.out.println("Plantas: " + contarPlantasVivas()
+                + " | Conejos: " + contarConejosVivos()
+                + " | Lobos: " + contarLobosVivos());
+
+        int plantasVivasInicio = contarPlantasVivas();
+        int conejosVivosInicio = contarConejosVivos();
+        int lobosVivosInicio = contarLobosVivos();
+
+        // 1. Actúan las plantas (ganan energía por clima y se reproducen)
+        for (Planta p : plantas) {
+            if (p.isViva()) {
+                p.actuar(this);
+            }
+        }
+
+        // 2. Actúan los conejos (buscan plantas para comer e intentan reproducirse)
+        for (Conejo c : conejos) {
+            if (c.isViva()) {
+                c.actuar(this);
+            }
+        }
+
+        // Polimorfismo con ArrayList<Reproducible>: recorrido unificado de entidades reproducibles
+        ArrayList<Reproducible> reproducibles = new ArrayList<>();
+        reproducibles.addAll(plantas);
+        reproducibles.addAll(conejos);
+        for (Reproducible r : reproducibles) {
+            // Si alguna entidad aún conserva energía extra suficiente tras su acción, evalúa reproducción
+            if (r.puedeReproducirse() && Math.random() < 0.15) {
+                r.intentarReproduccion(this);
+            }
+        }
+
+        // 3. Actúan los lobos (intentan cazar un conejo según probabilidad por energía)
+        for (Lobo l : lobos) {
+            if (l.isViva()) {
+                l.actuar(this);
+            }
+        }
+
+        // 4 y 5. Envejecimiento, gasto de energía base y verificación de muerte polimórfica (Mortal)
+        ArrayList<Mortal> mortales = new ArrayList<>();
+        mortales.addAll(plantas);
+        mortales.addAll(conejos);
+        mortales.addAll(lobos);
+
+        for (Mortal m : mortales) {
+            if (m.estaVivo() && m instanceof Entidad) {
+                Entidad ent = (Entidad) m;
+                ent.envejecer();
+                // Si la energía llegó a 0 al envejecer, reactivamos temporalmente el flag
+                // para que el método default verificarMuerte() de Mortal procese e imprima la baja
+                if (ent.getEnergia() <= 0) {
+                    ent.setViva(true);
+                    eventosTurnoActual.add(ent.getNombre() + " murió de inanición / agotamiento");
+                }
+            }
+        }
+
+        System.out.println("-- Eventos --");
+        // Uso del método default verificarMuerte() de la interface Mortal
+        for (Mortal m : mortales) {
+            if (m.estaVivo() && m.getEnergia() <= 0) {
+                m.verificarMuerte();
+            }
+        }
+
+        if (eventosTurnoActual.isEmpty()) {
+            System.out.println("Sin eventos relevantes en este turno.");
+        } else {
+            for (String ev : eventosTurnoActual) {
+                System.out.println(ev);
+            }
+        }
+
+        // Contabilizar bajas del turno antes de incorporar a los recién nacidos
+        muertesPlantas += Math.max(0, plantasVivasInicio - contarPlantasVivas());
+        muertesConejos += Math.max(0, conejosVivosInicio - contarConejosVivos());
+        muertesLobos += Math.max(0, lobosVivosInicio - contarLobosVivos());
+
+        // Incorporar nacimientos del turno a las colecciones principales
+        plantas.addAll(nuevasPlantasTurno);
+        conejos.addAll(nuevosConejosTurno);
+
+        // Actualizar registro del turno de mayor actividad
+        if (eventosTurnoActual.size() > maxEventosTurno) {
+            maxEventosTurno = eventosTurnoActual.size();
+            turnoMayorActividad = turnoActual;
+        }
+
+        // 6. Mostrar el estado general al final del turno
+        mostrarEstado();
+    }
+
+    public void generarReporteFinal() {
+        // Se implementa en el Commit 2
+    }
+
     public void cambiarClima(Clima nuevo) {
         if (nuevo != null) {
             this.climaActual = nuevo;
         }
     }
 
-    // Conteos de entidades vivas
     public int contarPlantasVivas() {
         int vivas = 0;
         for (Planta p : plantas) {
@@ -126,20 +236,16 @@ public class Ecosistema {
         return vivos;
     }
 
-    // Verifica si alguna de las 3 poblaciones llegó a 0
     public boolean ecosistemaColapsado() {
         return contarPlantasVivas() == 0 || contarConejosVivos() == 0 || contarLobosVivos() == 0;
     }
 
-    // Imprime el conteo actual de cada entidad y el clima
     public void mostrarEstado() {
         System.out.println("Estado: Plantas: " + contarPlantasVivas()
                 + " | Conejos: " + contarConejosVivos()
-                + " | Lobos: " + contarLobosVivos()
-                + " | Clima: " + climaActual.getNombre());
+                + " | Lobos: " + contarLobosVivos());
     }
 
-    // Métodos de búsqueda e interacción para Planta, Conejo y Lobo
     public Planta buscarPlantaViva() {
         ArrayList<Planta> vivas = new ArrayList<>();
         for (Planta p : plantas) {
@@ -213,25 +319,8 @@ public class Ecosistema {
         return totalLobosCreados < MAX_LOBOS_SIMULACION;
     }
 
-    // Getters para el Integrante 4 (Loop de turnos y Reporte Final)
-    public ArrayList<Planta> getPlantas() {
-        return plantas;
-    }
-
-    public ArrayList<Conejo> getConejos() {
-        return conejos;
-    }
-
-    public ArrayList<Lobo> getLobos() {
-        return lobos;
-    }
-
     public int getTurnoActual() {
         return turnoActual;
-    }
-
-    public void setTurnoActual(int turnoActual) {
-        this.turnoActual = Math.max(0, turnoActual);
     }
 
     public int getTurnosTotales() {
@@ -240,17 +329,5 @@ public class Ecosistema {
 
     public int getTotalLobosCreados() {
         return totalLobosCreados;
-    }
-
-    public ArrayList<String> getEventosTurnoActual() {
-        return eventosTurnoActual;
-    }
-
-    public ArrayList<Planta> getNuevasPlantasTurno() {
-        return nuevasPlantasTurno;
-    }
-
-    public ArrayList<Conejo> getNuevosConejosTurno() {
-        return nuevosConejosTurno;
     }
 }
