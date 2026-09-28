@@ -14,7 +14,7 @@ public abstract class Animal extends Entidad implements Mortal {
 
     public void moverse() {
         if (this.isViva()) {
-            System.out.println(this.getNombre() + " se desplazó por el ecosistema (velocidad: " + velocidad + ").");
+            System.out.println(this.getNombre() + " se desplazo por el ecosistema (velocidad: " + velocidad + ").");
         }
     }
     

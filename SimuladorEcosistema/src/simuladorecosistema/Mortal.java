@@ -19,7 +19,7 @@ public interface Mortal {
     default void verificarMuerte() {
         if (estaVivo() && getEnergia() <= 0) {
             morir();
-            System.out.println(getNombre() + " murió por quedarse sin energía.");
+            System.out.println(getNombre() + " murio por quedarse sin energia.");
         }
     }
 }
