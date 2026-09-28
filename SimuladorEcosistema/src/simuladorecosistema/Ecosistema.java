@@ -197,7 +197,80 @@ public class Ecosistema {
     }
 
     public void generarReporteFinal() {
-        // Se implementa en el Commit 2
+        System.out.println("\n==================================================");
+        System.out.println("          REPORTE FINAL DE LA SIMULACIÓN          ");
+        System.out.println("==================================================");
+
+        // 1. Causa de fin
+        if (ecosistemaColapsado()) {
+            ArrayList<String> extintas = new ArrayList<>();
+            if (contarPlantasVivas() == 0) extintas.add("Plantas");
+            if (contarConejosVivos() == 0) extintas.add("Conejos");
+            if (contarLobosVivos() == 0) extintas.add("Lobos");
+            System.out.println("• Causa de fin: Colapso del ecosistema en el turno " + turnoActual
+                    + " (Se extinguieron: " + String.join(", ", extintas) + ").");
+        } else {
+            System.out.println("• Causa de fin: Se completaron los " + turnosTotales + " turnos configurados.");
+        }
+
+        // 2. Turno de mayor actividad
+        System.out.println("• Turno de mayor actividad: Turno " + turnoMayorActividad
+                + " (" + maxEventosTurno + " eventos registrados).");
+
+        // 3. Entidad más longeva de cada tipo
+        Planta plantaMasLongeva = null;
+        for (Planta p : plantas) {
+            if (plantaMasLongeva == null || p.getEdad() > plantaMasLongeva.getEdad()) {
+                plantaMasLongeva = p;
+            }
+        }
+
+        Conejo conejoMasLongevo = null;
+        for (Conejo c : conejos) {
+            if (conejoMasLongevo == null || c.getEdad() > conejoMasLongevo.getEdad()) {
+                conejoMasLongevo = c;
+            }
+        }
+
+        Lobo loboMasLongevo = null;
+        for (Lobo l : lobos) {
+            if (loboMasLongevo == null || l.getEdad() > loboMasLongevo.getEdad()) {
+                loboMasLongevo = l;
+            }
+        }
+
+        System.out.println("\n--- ENTIDADES MÁS LONGEVAS ---");
+        System.out.println("• Planta más longeva : " + (plantaMasLongeva != null
+                ? plantaMasLongeva.getNombre() + " (" + plantaMasLongeva.getEdad() + " turnos)" : "N/A"));
+        System.out.println("• Conejo más longevo : " + (conejoMasLongevo != null
+                ? conejoMasLongevo.getNombre() + " (" + conejoMasLongevo.getEdad() + " turnos)" : "N/A"));
+        System.out.println("• Lobo más longevo   : " + (loboMasLongevo != null
+                ? loboMasLongevo.getNombre() + " (" + loboMasLongevo.getEdad() + " turnos)" : "N/A"));
+
+        // 4. Lobo con más cacerías exitosas
+        Lobo mejorCazador = null;
+        for (Lobo l : lobos) {
+            if (mejorCazador == null || l.getExitosCaza() > mejorCazador.getExitosCaza()) {
+                mejorCazador = l;
+            }
+        }
+        System.out.println("\n--- MEJOR DEPREDADOR ---");
+        if (mejorCazador != null) {
+            System.out.println("• Lobo con más cacerías exitosas: " + mejorCazador.getNombre()
+                    + " (" + mejorCazador.getExitosCaza() + " cacerías).");
+        } else {
+            System.out.println("• Lobo con más cacerías exitosas: Sin registros.");
+        }
+
+        // 5. Total de nacimientos y muertes por tipo
+        System.out.println("\n--- BALANCE DEMOGRÁFICO TOTAL ---");
+        System.out.println("• Plantas -> Nacimientos: " + nacimientosPlantas + " | Muertes: " + muertesPlantas
+                + " | Vivas al final: " + contarPlantasVivas());
+        System.out.println("• Conejos -> Nacimientos: " + nacimientosConejos + " | Muertes: " + muertesConejos
+                + " | Vivos al final: " + contarConejosVivos());
+        System.out.println("• Lobos   -> Nacimientos: 0 (no se reproducen) | Muertes: " + muertesLobos
+                + " | Vivos al final: " + contarLobosVivos());
+        System.out.println("==================================================");
     }
 
     public void cambiarClima(Clima nuevo) {
