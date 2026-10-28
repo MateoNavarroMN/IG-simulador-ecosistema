@@ -56,8 +56,8 @@ public class Planta extends Entidad implements Reproducible, Mortal {
         Planta nuevaPlanta = new Planta(nuevoNombre, ENERGIA_PLANTA_HIJA, 0, true, nuevoTamanio);
 
         eco.agregarPlantaHija(nuevaPlanta);
-        eco.registrarEvento("Planta '" + this.getNombre() + "' se reprodujo -> nueva planta '" 
-                + nuevoNombre + "' (energia: " + (int) ENERGIA_PLANTA_HIJA + ")");
+        eco.registrarEvento("NACIMIENTO: " + nuevoNombre + " nacio de " + this.getNombre()
+                + " (energia inicial: " + (int) ENERGIA_PLANTA_HIJA + ")");
     }
 
     // Reduce energía al mínimo (0) y retorna el valor nutritivo (tamanio * 10)

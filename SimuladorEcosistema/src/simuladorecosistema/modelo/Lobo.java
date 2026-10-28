@@ -37,7 +37,7 @@ public class Lobo extends Animal {
         Conejo presa = eco.obtenerConejoVivoAleatorio();
 
         if (presa == null) {
-            eco.registrarEvento("Lobo '" + this.getNombre() + "' busco presas pero no quedan conejos vivos.");
+            eco.registrarEvento("CAZA: " + this.getNombre() + " busco presas pero no quedan conejos vivos");
             return;
         }
 
@@ -49,11 +49,12 @@ public class Lobo extends Animal {
             presa.morir();
             this.setEnergia(this.getEnergia() + GANANCIA_POR_CAZA);
             this.exitosCaza++;
-            eco.registrarEvento("Lobo '" + this.getNombre() + "' cazo a Conejo '" + presa.getNombre() 
-                    + "' (+" + (int) GANANCIA_POR_CAZA + " energia) [cacerias: " + this.exitosCaza + "]");
+            eco.registrarEvento("CAZA: " + this.getNombre() + " cazo a " + presa.getNombre() 
+                    + " (+" + (int) GANANCIA_POR_CAZA + " de energia, cacerias exitosas: " + this.exitosCaza + ")");
+            eco.registrarEvento("MUERTE: " + presa.getNombre() + " murio cazado por " + this.getNombre());
         } else {
             this.setEnergia(this.getEnergia() - COSTO_INTENTO_FALLIDO);
-            eco.registrarEvento("Lobo '" + this.getNombre() + "' fallo la caza");
+            eco.registrarEvento("CAZA: " + this.getNombre() + " fallo la caza (-" + (int) COSTO_INTENTO_FALLIDO + " de energia)");
         }
     }
 

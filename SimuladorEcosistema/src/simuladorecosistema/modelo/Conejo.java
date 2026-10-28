@@ -53,19 +53,19 @@ public class Conejo extends Animal implements Reproducible {
             this.setEnergia(this.getEnergia() + ganancia);
 
             if (ganancia >= 0) {
-                eco.registrarEvento("Conejo '" + this.getNombre() + "' comio '" 
-                        + plantaEncontrada.getNombre() + "' (+" + (int) ganancia + " energia)");
+                eco.registrarEvento("COMIDA: " + this.getNombre() + " comio " 
+                        + plantaEncontrada.getNombre() + " (+" + (int) ganancia + " de energia)");
             } else {
-                eco.registrarEvento("Conejo '" + this.getNombre() + "' comio planta venenosa '" 
-                        + plantaEncontrada.getNombre() + "' (" + (int) ganancia + " energia)");
+                eco.registrarEvento("COMIDA: " + this.getNombre() + " comio la planta venenosa " 
+                        + plantaEncontrada.getNombre() + " (" + (int) ganancia + " de energia)");
             }
         } else {
             this.setEnergia(this.getEnergia() - PERDIDA_POR_HAMBRE);
             String alertaPeligro = (this.getEnergia() > 0 && this.getEnergia() < UMBRAL_PELIGRO)
                     ? " [PELIGRO: energia=" + (int) this.getEnergia() + "]"
                     : "";
-            eco.registrarEvento("Conejo '" + this.getNombre() + "' no encontro comida (-" 
-                    + (int) PERDIDA_POR_HAMBRE + " energia)" + alertaPeligro);
+            eco.registrarEvento("HAMBRE: " + this.getNombre() + " no encontro plantas (-" 
+                    + (int) PERDIDA_POR_HAMBRE + " de energia)" + alertaPeligro);
         }
     }
 
@@ -84,8 +84,8 @@ public class Conejo extends Animal implements Reproducible {
         Conejo cria = new Conejo(nombreCria, ENERGIA_CRIA);
 
         eco.agregarConejoHijo(cria);
-        eco.registrarEvento("Conejo '" + this.getNombre() + "' tuvo una cria -> nuevo conejo '" 
-                + nombreCria + "' (energia: " + (int) ENERGIA_CRIA + ")");
+        eco.registrarEvento("NACIMIENTO: " + nombreCria + " nacio de " + this.getNombre()
+                + " (energia inicial: " + (int) ENERGIA_CRIA + ")");
     }
 
     @Override
