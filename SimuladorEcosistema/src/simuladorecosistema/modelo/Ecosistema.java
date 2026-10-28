@@ -179,29 +179,15 @@ public class Ecosistema {
         return new ArrayList<>(eventosTurnoActual);
     }
 
-    public String generarReporteFinal() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("\n==================================================").append("\n");
-        sb.append("           REPORTE FINAL DE LA SIMULACION         ").append("\n");
-        sb.append("==================================================").append("\n");
-
-        // 1. Causa de fin
+    // Entrega los datos del reporte final para que la vista los muestre
+    public ReporteFinal obtenerReporteFinal() {
+        ArrayList<String> extintas = new ArrayList<>();
         if (ecosistemaColapsado()) {
-            ArrayList<String> extintas = new ArrayList<>();
             if (contarPlantasVivas() == 0) extintas.add("Plantas");
             if (contarConejosVivos() == 0) extintas.add("Conejos");
             if (contarLobosVivos() == 0) extintas.add("Lobos");
-            sb.append("Causa de fin: Colapso del ecosistema en el turno " + turnoActual
-                    + " (Se extinguieron: " + String.join(", ", extintas) + ").").append("\n");
-        } else {
-            sb.append("Causa de fin: Se completaron los " + turnosTotales + " turnos configurados.").append("\n");
         }
 
-        // 2. Turno de mayor actividad
-        sb.append("Turno de mayor actividad: Turno " + turnoMayorActividad
-                + " (" + maxEventosTurno + " eventos registrados).").append("\n");
-
-        // 3. Entidad mas longeva de cada tipo
         Planta plantaMasLongeva = null;
         for (Planta p : plantas) {
             if (plantaMasLongeva == null || p.getEdad() > plantaMasLongeva.getEdad()) {
@@ -217,45 +203,22 @@ public class Ecosistema {
         }
 
         Lobo loboMasLongevo = null;
+        Lobo mejorCazador = null;
         for (Lobo l : lobos) {
             if (loboMasLongevo == null || l.getEdad() > loboMasLongevo.getEdad()) {
                 loboMasLongevo = l;
             }
-        }
-
-        sb.append("\n--- ENTIDADES MAS LONGEVAS ---").append("\n");
-        sb.append("Planta mas longeva : " + (plantaMasLongeva != null
-                ? plantaMasLongeva.getNombre() + " (" + plantaMasLongeva.getEdad() + " turnos)" : "N/A")).append("\n");
-        sb.append("Conejo mas longevo : " + (conejoMasLongevo != null
-                ? conejoMasLongevo.getNombre() + " (" + conejoMasLongevo.getEdad() + " turnos)" : "N/A")).append("\n");
-        sb.append("Lobo mas longevo   : " + (loboMasLongevo != null
-                ? loboMasLongevo.getNombre() + " (" + loboMasLongevo.getEdad() + " turnos)" : "N/A")).append("\n");
-
-        // 4. Lobo con mas cacerias exitosas
-        Lobo mejorCazador = null;
-        for (Lobo l : lobos) {
             if (mejorCazador == null || l.getExitosCaza() > mejorCazador.getExitosCaza()) {
                 mejorCazador = l;
             }
         }
-        sb.append("\n--- MEJOR DEPREDADOR ---").append("\n");
-        if (mejorCazador != null) {
-            sb.append("• Lobo con mas cacerias exitosas: " + mejorCazador.getNombre()
-                    + " (" + mejorCazador.getExitosCaza() + " cacerias).").append("\n");
-        } else {
-            sb.append("• Lobo con mas cacerias exitosas: Sin registros.").append("\n");
-        }
 
-        // 5. Total de nacimientos y muertes por tipo
-        sb.append("\n--- BALANCE DEMOGRAFICO TOTAL ---").append("\n");
-        sb.append("Plantas -> Nacimientos: " + nacimientosPlantas + " | Muertes: " + muertesPlantas
-                + " | Vivas al final: " + contarPlantasVivas()).append("\n");
-        sb.append("Conejos -> Nacimientos: " + nacimientosConejos + " | Muertes: " + muertesConejos
-                + " | Vivos al final: " + contarConejosVivos()).append("\n");
-        sb.append("Lobos   -> Nacimientos: 0 (no se reproducen) | Muertes: " + muertesLobos
-                + " | Vivos al final: " + contarLobosVivos()).append("\n");
-        sb.append("==================================================").append("\n");
-            return sb.toString();
+        return new ReporteFinal(ecosistemaColapsado(), turnoActual, turnosTotales, extintas,
+                turnoMayorActividad, maxEventosTurno,
+                plantaMasLongeva, conejoMasLongevo, loboMasLongevo, mejorCazador,
+                nacimientosPlantas, nacimientosConejos,
+                muertesPlantas, muertesConejos, muertesLobos,
+                contarPlantasVivas(), contarConejosVivos(), contarLobosVivos());
     }
 
     public void cambiarClima(Clima nuevo) {
@@ -387,5 +350,34 @@ public class Ecosistema {
 
     public int getTotalLobosCreados() {
         return totalLobosCreados;
+    }
+
+    // Contadores acumulados (los usa el reporte final y, mas adelante, el snapshot)
+    public int getNacimientosPlantas() {
+        return nacimientosPlantas;
+    }
+
+    public int getNacimientosConejos() {
+        return nacimientosConejos;
+    }
+
+    public int getMuertesPlantas() {
+        return muertesPlantas;
+    }
+
+    public int getMuertesConejos() {
+        return muertesConejos;
+    }
+
+    public int getMuertesLobos() {
+        return muertesLobos;
+    }
+
+    public int getTurnoMayorActividad() {
+        return turnoMayorActividad;
+    }
+
+    public int getMaxEventosTurno() {
+        return maxEventosTurno;
     }
 }
