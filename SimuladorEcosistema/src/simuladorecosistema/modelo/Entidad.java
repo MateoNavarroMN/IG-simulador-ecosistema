@@ -27,7 +27,7 @@ public abstract class Entidad {
     // Métodos abstractos obligatorios
     public abstract void actuar(Ecosistema eco);
 
-    public abstract void mostrarEstado();
+    public abstract String mostrarEstado();
 
     // Método concreto: incrementa edad y descuenta energía base por existir
     public void envejecer() {

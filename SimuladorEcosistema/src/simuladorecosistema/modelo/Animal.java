@@ -12,10 +12,11 @@ public abstract class Animal extends Entidad implements Mortal {
      
     public abstract void comer(Ecosistema eco);
 
-    public void moverse() {
+    public String moverse() {
         if (this.isViva()) {
-            System.out.println(this.getNombre() + " se desplazo por el ecosistema (velocidad: " + velocidad + ").");
+            return this.getNombre() + " se desplazo por el ecosistema (velocidad: " + velocidad + ").";
         }
+        return "";
     }
     
     // Implementación de la interface Mortal

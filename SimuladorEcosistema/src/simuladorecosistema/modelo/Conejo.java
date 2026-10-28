@@ -89,9 +89,9 @@ public class Conejo extends Animal implements Reproducible {
     }
 
     @Override
-    public void mostrarEstado() {
+    public String mostrarEstado() {
         String estadoPeligro = (this.isViva() && this.getEnergia() < UMBRAL_PELIGRO) ? " [EN PELIGRO]" : "";
-        System.out.println("Conejo [" + getNombre() + "] | Energia: " + (int) getEnergia() 
-                + estadoPeligro + " | Vivo: " + (isViva() ? "Si" : "No"));
+        return "Conejo [" + getNombre() + "] | Energia: " + (int) getEnergia() 
+                + estadoPeligro + " | Vivo: " + (isViva() ? "Si" : "No");
     }
 }

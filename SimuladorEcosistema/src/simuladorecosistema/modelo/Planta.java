@@ -69,9 +69,9 @@ public class Planta extends Entidad implements Reproducible, Mortal {
     }
 
     @Override
-    public void mostrarEstado() {
-        System.out.println("Planta [" + getNombre() + "] | Tamaño: " + tamanio 
-                + " | Energía: " + (int) getEnergia() + " | Viva: " + (isViva() ? "Sí" : "No"));
+    public String mostrarEstado() {
+        return "Planta [" + getNombre() + "] | Tamaño: " + tamanio 
+                + " | Energía: " + (int) getEnergia() + " | Viva: " + (isViva() ? "Sí" : "No");
     }
 
     // Implementación de Mortal
