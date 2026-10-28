@@ -58,9 +58,9 @@ public class Lobo extends Animal {
     }
 
     @Override
-    public void mostrarEstado() {
-        System.out.println("Lobo [" + getNombre() + "] | Energia: " + (int) getEnergia() 
-                + " | Cacerias exitosas: " + exitosCaza + " | Vivo: " + (isViva() ? "Si" : "No"));
+    public String mostrarEstado() {
+        return "Lobo [" + getNombre() + "] | Energia: " + (int) getEnergia() 
+                + " | Cacerias exitosas: " + exitosCaza + " | Vivo: " + (isViva() ? "Si" : "No");
     }
 
     public int getExitosCaza() {

@@ -1,5 +1,6 @@
 package simuladorecosistema;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 import simuladorecosistema.modelo.*;
 
@@ -10,13 +11,13 @@ public class SimuladorEcosistema {
         Ecosistema ecosistema = configurarSimulacion(scanner);
 
         System.out.println("\n!Ecosistema inicializado correctamente!");
-        ecosistema.mostrarEstado();
+        System.out.println(ecosistema.mostrarEstado());
 
         // Loop principal de simulacion (Integrante 4)
         ejecutarSimulacion(scanner, ecosistema);
 
         // Reporte estadistico al finalizar
-        ecosistema.generarReporteFinal();
+        System.out.println(ecosistema.generarReporteFinal());
     }
 
     public static void ejecutarSimulacion(Scanner scanner, Ecosistema eco) {
@@ -24,7 +25,18 @@ public class SimuladorEcosistema {
             System.out.print("\n>>> Presione Enter para continuar al siguiente turno...");
             scanner.nextLine();
 
-            eco.procesarTurno();
+            ArrayList<String> eventos = eco.procesarTurno();
+
+            System.out.println("\n=== TURNO " + eco.getTurnoActual() + " | Clima: " + eco.getClimaActual().getNombre() + " ===");
+            System.out.println("-- Eventos --");
+            if (eventos.isEmpty()) {
+                System.out.println("Sin eventos relevantes en este turno.");
+            } else {
+                for (String ev : eventos) {
+                    System.out.println(ev);
+                }
+            }
+            System.out.println(eco.mostrarEstado());
 
             // Si el ecosistema colapso o llego al ultimo turno, cortamos el ciclo
             if (eco.ecosistemaColapsado() || eco.getTurnoActual() >= eco.getTurnosTotales()) {

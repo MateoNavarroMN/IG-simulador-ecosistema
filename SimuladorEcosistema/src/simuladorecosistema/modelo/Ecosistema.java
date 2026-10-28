@@ -77,8 +77,6 @@ public class Ecosistema {
 
             case "lobo":
                 if (totalLobosCreados >= MAX_LOBOS_SIMULACION) {
-                    System.out.println("[!] No se pueden agregar mas lobos. Limite maximo de "
-                            + MAX_LOBOS_SIMULACION + " alcanzado en toda la simulacion.");
                     return false;
                 }
                 totalLobosCreados++;
@@ -87,7 +85,6 @@ public class Ecosistema {
                 return true;
 
             default:
-                System.out.println("[!] Tipo de entidad invalido: " + tipo);
                 return false;
         }
     }
@@ -95,16 +92,11 @@ public class Ecosistema {
     // =========================================================================
     // MOTOR DE SIMULACION POR TURNO (Integrante 4)
     // =========================================================================
-    public void procesarTurno() {
+    public ArrayList<String> procesarTurno() {
         turnoActual++;
         eventosTurnoActual.clear();
         nuevasPlantasTurno.clear();
         nuevosConejosTurno.clear();
-
-        System.out.println("\n=== TURNO " + turnoActual + " | Clima: " + climaActual.getNombre() + " ===");
-        System.out.println("Plantas: " + contarPlantasVivas()
-                + " | Conejos: " + contarConejosVivos()
-                + " | Lobos: " + contarLobosVivos());
 
         int plantasVivasInicio = contarPlantasVivas();
         int conejosVivosInicio = contarConejosVivos();
@@ -153,7 +145,7 @@ public class Ecosistema {
                 Entidad ent = (Entidad) m;
                 ent.envejecer();
                 // Si la energia llego a 0 al envejecer, reactivamos temporalmente el flag
-                // para que el metodo default verificarMuerte() de Mortal procese e imprima la baja
+                // para que el metodo default verificarMuerte() de Mortal procese la baja
                 if (ent.getEnergia() <= 0) {
                     ent.setViva(true);
                     eventosTurnoActual.add(ent.getNombre() + " murio de inanicion / agotamiento");
@@ -161,19 +153,10 @@ public class Ecosistema {
             }
         }
 
-        System.out.println("-- Eventos --");
         // Uso del metodo default verificarMuerte() de la interface Mortal
         for (Mortal m : mortales) {
             if (m.estaVivo() && m.getEnergia() <= 0) {
                 m.verificarMuerte();
-            }
-        }
-
-        if (eventosTurnoActual.isEmpty()) {
-            System.out.println("Sin eventos relevantes en este turno.");
-        } else {
-            for (String ev : eventosTurnoActual) {
-                System.out.println(ev);
             }
         }
 
@@ -192,14 +175,15 @@ public class Ecosistema {
             turnoMayorActividad = turnoActual;
         }
 
-        // 6. Mostrar el estado general al final del turno
-        mostrarEstado();
+        // 6. Devolver los eventos del turno para que la vista los muestre
+        return new ArrayList<>(eventosTurnoActual);
     }
 
-    public void generarReporteFinal() {
-        System.out.println("\n==================================================");
-        System.out.println("           REPORTE FINAL DE LA SIMULACION         ");
-        System.out.println("==================================================");
+    public String generarReporteFinal() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n==================================================").append("\n");
+        sb.append("           REPORTE FINAL DE LA SIMULACION         ").append("\n");
+        sb.append("==================================================").append("\n");
 
         // 1. Causa de fin
         if (ecosistemaColapsado()) {
@@ -207,15 +191,15 @@ public class Ecosistema {
             if (contarPlantasVivas() == 0) extintas.add("Plantas");
             if (contarConejosVivos() == 0) extintas.add("Conejos");
             if (contarLobosVivos() == 0) extintas.add("Lobos");
-            System.out.println("Causa de fin: Colapso del ecosistema en el turno " + turnoActual
-                    + " (Se extinguieron: " + String.join(", ", extintas) + ").");
+            sb.append("Causa de fin: Colapso del ecosistema en el turno " + turnoActual
+                    + " (Se extinguieron: " + String.join(", ", extintas) + ").").append("\n");
         } else {
-            System.out.println("Causa de fin: Se completaron los " + turnosTotales + " turnos configurados.");
+            sb.append("Causa de fin: Se completaron los " + turnosTotales + " turnos configurados.").append("\n");
         }
 
         // 2. Turno de mayor actividad
-        System.out.println("Turno de mayor actividad: Turno " + turnoMayorActividad
-                + " (" + maxEventosTurno + " eventos registrados).");
+        sb.append("Turno de mayor actividad: Turno " + turnoMayorActividad
+                + " (" + maxEventosTurno + " eventos registrados).").append("\n");
 
         // 3. Entidad mas longeva de cada tipo
         Planta plantaMasLongeva = null;
@@ -239,13 +223,13 @@ public class Ecosistema {
             }
         }
 
-        System.out.println("\n--- ENTIDADES MAS LONGEVAS ---");
-        System.out.println("Planta mas longeva : " + (plantaMasLongeva != null
-                ? plantaMasLongeva.getNombre() + " (" + plantaMasLongeva.getEdad() + " turnos)" : "N/A"));
-        System.out.println("Conejo mas longevo : " + (conejoMasLongevo != null
-                ? conejoMasLongevo.getNombre() + " (" + conejoMasLongevo.getEdad() + " turnos)" : "N/A"));
-        System.out.println("Lobo mas longevo   : " + (loboMasLongevo != null
-                ? loboMasLongevo.getNombre() + " (" + loboMasLongevo.getEdad() + " turnos)" : "N/A"));
+        sb.append("\n--- ENTIDADES MAS LONGEVAS ---").append("\n");
+        sb.append("Planta mas longeva : " + (plantaMasLongeva != null
+                ? plantaMasLongeva.getNombre() + " (" + plantaMasLongeva.getEdad() + " turnos)" : "N/A")).append("\n");
+        sb.append("Conejo mas longevo : " + (conejoMasLongevo != null
+                ? conejoMasLongevo.getNombre() + " (" + conejoMasLongevo.getEdad() + " turnos)" : "N/A")).append("\n");
+        sb.append("Lobo mas longevo   : " + (loboMasLongevo != null
+                ? loboMasLongevo.getNombre() + " (" + loboMasLongevo.getEdad() + " turnos)" : "N/A")).append("\n");
 
         // 4. Lobo con mas cacerias exitosas
         Lobo mejorCazador = null;
@@ -254,23 +238,24 @@ public class Ecosistema {
                 mejorCazador = l;
             }
         }
-        System.out.println("\n--- MEJOR DEPREDADOR ---");
+        sb.append("\n--- MEJOR DEPREDADOR ---").append("\n");
         if (mejorCazador != null) {
-            System.out.println("• Lobo con mas cacerias exitosas: " + mejorCazador.getNombre()
-                    + " (" + mejorCazador.getExitosCaza() + " cacerias).");
+            sb.append("• Lobo con mas cacerias exitosas: " + mejorCazador.getNombre()
+                    + " (" + mejorCazador.getExitosCaza() + " cacerias).").append("\n");
         } else {
-            System.out.println("• Lobo con mas cacerias exitosas: Sin registros.");
+            sb.append("• Lobo con mas cacerias exitosas: Sin registros.").append("\n");
         }
 
         // 5. Total de nacimientos y muertes por tipo
-        System.out.println("\n--- BALANCE DEMOGRAFICO TOTAL ---");
-        System.out.println("Plantas -> Nacimientos: " + nacimientosPlantas + " | Muertes: " + muertesPlantas
-                + " | Vivas al final: " + contarPlantasVivas());
-        System.out.println("Conejos -> Nacimientos: " + nacimientosConejos + " | Muertes: " + muertesConejos
-                + " | Vivos al final: " + contarConejosVivos());
-        System.out.println("Lobos   -> Nacimientos: 0 (no se reproducen) | Muertes: " + muertesLobos
-                + " | Vivos al final: " + contarLobosVivos());
-        System.out.println("==================================================");
+        sb.append("\n--- BALANCE DEMOGRAFICO TOTAL ---").append("\n");
+        sb.append("Plantas -> Nacimientos: " + nacimientosPlantas + " | Muertes: " + muertesPlantas
+                + " | Vivas al final: " + contarPlantasVivas()).append("\n");
+        sb.append("Conejos -> Nacimientos: " + nacimientosConejos + " | Muertes: " + muertesConejos
+                + " | Vivos al final: " + contarConejosVivos()).append("\n");
+        sb.append("Lobos   -> Nacimientos: 0 (no se reproducen) | Muertes: " + muertesLobos
+                + " | Vivos al final: " + contarLobosVivos()).append("\n");
+        sb.append("==================================================").append("\n");
+            return sb.toString();
     }
 
     public void cambiarClima(Clima nuevo) {
@@ -313,10 +298,10 @@ public class Ecosistema {
         return contarPlantasVivas() == 0 || contarConejosVivos() == 0 || contarLobosVivos() == 0;
     }
 
-    public void mostrarEstado() {
-        System.out.println("Estado: Plantas: " + contarPlantasVivas()
+    public String mostrarEstado() {
+        return "Estado: Plantas: " + contarPlantasVivas()
                 + " | Conejos: " + contarConejosVivos()
-                + " | Lobos: " + contarLobosVivos());
+                + " | Lobos: " + contarLobosVivos();
     }
 
     public Planta buscarPlantaViva() {
