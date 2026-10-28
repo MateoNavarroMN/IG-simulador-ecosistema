@@ -1,4 +1,4 @@
-package simuladorecosistema;
+package simuladorecosistema.modelo;
 
 public abstract class Animal extends Entidad implements Mortal {
     private int velocidad;

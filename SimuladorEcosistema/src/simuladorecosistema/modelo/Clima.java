@@ -1,4 +1,4 @@
-package simuladorecosistema;
+package simuladorecosistema.modelo;
 
 public enum Clima {
     SOLEADO("Soleado", 1.5, 5.0, 0.0, 0.0),
