@@ -14,6 +14,13 @@ public class Conejo extends Animal implements Reproducible {
         super(nombre, energia, edad, viva, velocidad, peso);
     }
     
+    // Evita que las crias nuevas repitan el numero de un conejo restaurado
+    public static void sincronizarContador(int minimo) {
+        if (minimo > contadorConejos) {
+            contadorConejos = minimo;
+        }
+    }
+
     // Constructor abreviado para nacimientos o creacion rapida
     public Conejo(String nombre, double energia) {
         this(nombre, energia, 0, true, 12, 2.5);

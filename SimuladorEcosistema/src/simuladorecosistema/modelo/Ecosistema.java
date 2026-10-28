@@ -221,6 +221,72 @@ public class Ecosistema {
                 contarPlantasVivas(), contarConejosVivos(), contarLobosVivos());
     }
 
+    // Foto del estado actual (copias independientes) para que el DAO la guarde
+    public Snapshot exportarSnapshot() {
+        ArrayList<Planta> copiaPlantas = new ArrayList<>();
+        for (Planta p : plantas) {
+            copiaPlantas.add(new Planta(p.getNombre(), p.getEnergia(), p.getEdad(), p.isViva(), p.getTamanio()));
+        }
+        ArrayList<Conejo> copiaConejos = new ArrayList<>();
+        for (Conejo c : conejos) {
+            copiaConejos.add(new Conejo(c.getNombre(), c.getEnergia(), c.getEdad(), c.isViva(), c.getVelocidad(), c.getPeso()));
+        }
+        ArrayList<Lobo> copiaLobos = new ArrayList<>();
+        for (Lobo l : lobos) {
+            copiaLobos.add(new Lobo(l.getNombre(), l.getEnergia(), l.getEdad(), l.isViva(), l.getVelocidad(), l.getPeso(), l.getExitosCaza()));
+        }
+        return new Snapshot(climaActual, turnoActual, turnosTotales, totalLobosCreados,
+                nacimientosPlantas, nacimientosConejos, muertesPlantas, muertesConejos, muertesLobos,
+                turnoMayorActividad, maxEventosTurno, copiaPlantas, copiaConejos, copiaLobos);
+    }
+
+    // Reconstruye un ecosistema igual al que se guardo
+    public static Ecosistema desdeSnapshot(Snapshot s) {
+        if (s == null || s.getClima() == null) {
+            throw new IllegalArgumentException("Snapshot invalido");
+        }
+        Ecosistema eco = new Ecosistema(s.getClima(), s.getTurnosTotales());
+        eco.turnoActual = Math.max(0, Math.min(s.getTurnoActual(), eco.turnosTotales));
+        eco.totalLobosCreados = Math.max(0, s.getTotalLobosCreados());
+        eco.nacimientosPlantas = Math.max(0, s.getNacimientosPlantas());
+        eco.nacimientosConejos = Math.max(0, s.getNacimientosConejos());
+        eco.muertesPlantas = Math.max(0, s.getMuertesPlantas());
+        eco.muertesConejos = Math.max(0, s.getMuertesConejos());
+        eco.muertesLobos = Math.max(0, s.getMuertesLobos());
+        eco.turnoMayorActividad = Math.max(1, s.getTurnoMayorActividad());
+        eco.maxEventosTurno = Math.max(0, s.getMaxEventosTurno());
+
+        int maxPlanta = 0;
+        for (Planta p : s.getPlantas()) {
+            eco.plantas.add(new Planta(p.getNombre(), p.getEnergia(), p.getEdad(), p.isViva(), p.getTamanio()));
+            maxPlanta = Math.max(maxPlanta, numeroDeNombre(p.getNombre()));
+        }
+        int maxConejo = 0;
+        for (Conejo c : s.getConejos()) {
+            eco.conejos.add(new Conejo(c.getNombre(), c.getEnergia(), c.getEdad(), c.isViva(), c.getVelocidad(), c.getPeso()));
+            maxConejo = Math.max(maxConejo, numeroDeNombre(c.getNombre()));
+        }
+        for (Lobo l : s.getLobos()) {
+            eco.lobos.add(new Lobo(l.getNombre(), l.getEnergia(), l.getEdad(), l.isViva(), l.getVelocidad(), l.getPeso(), l.getExitosCaza()));
+        }
+        Planta.sincronizarContador(maxPlanta);
+        Conejo.sincronizarContador(maxConejo);
+        return eco;
+    }
+
+    // Numero al final de un nombre como "Helecho-12" (0 si no tiene)
+    private static int numeroDeNombre(String nombre) {
+        int guion = nombre.lastIndexOf('-');
+        if (guion < 0) {
+            return 0;
+        }
+        try {
+            return Integer.parseInt(nombre.substring(guion + 1));
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
     public void cambiarClima(Clima nuevo) {
         if (nuevo != null) {
             this.climaActual = nuevo;

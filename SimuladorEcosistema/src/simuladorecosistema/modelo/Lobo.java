@@ -10,6 +10,12 @@ public class Lobo extends Animal {
         this.exitosCaza = 0;
     }
 
+    // Constructor de restauracion (carga de una simulacion guardada)
+    public Lobo(String nombre, double energia, int edad, boolean viva, int velocidad, double peso, int exitosCaza) {
+        this(nombre, energia, edad, viva, velocidad, peso);
+        this.setExitosCaza(exitosCaza);
+    }
+
     // Constructor abreviado
     public Lobo(String nombre, double energia) {
         this(nombre, energia, 0, true, 25, 35.0);
