@@ -1,6 +1,7 @@
 package simuladorecosistema;
 
 import java.util.Scanner;
+import simuladorecosistema.modelo.*;
 
 public class SimuladorEcosistema {
 

@@ -1,4 +1,4 @@
-package simuladorecosistema;
+package simuladorecosistema.modelo;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package simuladorecosistema;
+package simuladorecosistema.modelo;
 
 public class Conejo extends Animal implements Reproducible {
     private static int contadorConejos = 1;

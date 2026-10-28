@@ -1,4 +1,4 @@
-package simuladorecosistema;
+package simuladorecosistema.modelo;
 
 public class Lobo extends Animal {
     private int exitosCaza;
