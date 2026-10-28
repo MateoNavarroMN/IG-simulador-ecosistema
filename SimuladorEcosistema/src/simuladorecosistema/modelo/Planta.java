@@ -21,6 +21,13 @@ public class Planta extends Entidad implements Reproducible, Mortal {
         this.setTamanio(tamanio);
     }
 
+    // Evita que las plantas hijas nuevas repitan el numero de una planta restaurada
+    public static void sincronizarContador(int minimo) {
+        if (minimo > contadorPlantas) {
+            contadorPlantas = minimo;
+        }
+    }
+
     // Constructor simplificado útil para crear plantas nuevas rápido
     public Planta(String nombre, double energia, int tamanio) {
         this(nombre, energia, 0, true, tamanio);
