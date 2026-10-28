@@ -20,12 +20,14 @@ public class Snapshot {
     private final ArrayList<Planta> plantas;
     private final ArrayList<Conejo> conejos;
     private final ArrayList<Lobo> lobos;
+    private final ArrayList<RegistroPoblacion> historialPoblacion;
 
     public Snapshot(Clima clima, int turnoActual, int turnosTotales, int totalLobosCreados,
             int nacimientosPlantas, int nacimientosConejos,
             int muertesPlantas, int muertesConejos, int muertesLobos,
             int turnoMayorActividad, int maxEventosTurno,
-            ArrayList<Planta> plantas, ArrayList<Conejo> conejos, ArrayList<Lobo> lobos) {
+            ArrayList<Planta> plantas, ArrayList<Conejo> conejos, ArrayList<Lobo> lobos,
+            ArrayList<RegistroPoblacion> historialPoblacion) {
         this.clima = clima;
         this.turnoActual = turnoActual;
         this.turnosTotales = turnosTotales;
@@ -40,6 +42,7 @@ public class Snapshot {
         this.plantas = plantas;
         this.conejos = conejos;
         this.lobos = lobos;
+        this.historialPoblacion = historialPoblacion;
     }
 
     public Clima getClima() {
@@ -96,5 +99,9 @@ public class Snapshot {
 
     public ArrayList<Lobo> getLobos() {
         return lobos;
+    }
+
+    public ArrayList<RegistroPoblacion> getHistorialPoblacion() {
+        return historialPoblacion;
     }
 }

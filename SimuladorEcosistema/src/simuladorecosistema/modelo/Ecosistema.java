@@ -21,6 +21,7 @@ public class Ecosistema {
     private int turnoMayorActividad;
     private int maxEventosTurno;
 
+    private ArrayList<RegistroPoblacion> historialPoblacion;
     private ArrayList<String> eventosTurnoActual;
     private ArrayList<Planta> nuevasPlantasTurno;
     private ArrayList<Conejo> nuevosConejosTurno;
@@ -42,6 +43,7 @@ public class Ecosistema {
         this.muertesLobos = 0;
         this.turnoMayorActividad = 1;
         this.maxEventosTurno = 0;
+        this.historialPoblacion = new ArrayList<>();
         this.eventosTurnoActual = new ArrayList<>();
         this.nuevasPlantasTurno = new ArrayList<>();
         this.nuevosConejosTurno = new ArrayList<>();
@@ -175,6 +177,10 @@ public class Ecosistema {
             turnoMayorActividad = turnoActual;
         }
 
+        // Registrar la poblacion al cierre del turno (con los recien nacidos ya incorporados)
+        historialPoblacion.add(new RegistroPoblacion(turnoActual,
+                contarPlantasVivas(), contarConejosVivos(), contarLobosVivos()));
+
         // 6. Devolver los eventos del turno para que la vista los muestre
         return new ArrayList<>(eventosTurnoActual);
     }
@@ -237,7 +243,8 @@ public class Ecosistema {
         }
         return new Snapshot(climaActual, turnoActual, turnosTotales, totalLobosCreados,
                 nacimientosPlantas, nacimientosConejos, muertesPlantas, muertesConejos, muertesLobos,
-                turnoMayorActividad, maxEventosTurno, copiaPlantas, copiaConejos, copiaLobos);
+                turnoMayorActividad, maxEventosTurno, copiaPlantas, copiaConejos, copiaLobos,
+                new ArrayList<>(historialPoblacion));
     }
 
     // Reconstruye un ecosistema igual al que se guardo
@@ -255,6 +262,9 @@ public class Ecosistema {
         eco.muertesLobos = Math.max(0, s.getMuertesLobos());
         eco.turnoMayorActividad = Math.max(1, s.getTurnoMayorActividad());
         eco.maxEventosTurno = Math.max(0, s.getMaxEventosTurno());
+
+        // Los registros son inmutables, se pueden compartir
+        eco.historialPoblacion.addAll(s.getHistorialPoblacion());
 
         int maxPlanta = 0;
         for (Planta p : s.getPlantas()) {
@@ -404,6 +414,11 @@ public class Ecosistema {
 
     public boolean puedeAgregarMasLobos() {
         return totalLobosCreados < MAX_LOBOS_SIMULACION;
+    }
+
+    // Poblacion por turno, en orden; una entrada por cada turno procesado
+    public ArrayList<RegistroPoblacion> getHistorialPoblacion() {
+        return new ArrayList<>(historialPoblacion);
     }
 
     public int getTurnoActual() {
