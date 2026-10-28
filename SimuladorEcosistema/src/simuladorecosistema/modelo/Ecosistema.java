@@ -148,7 +148,7 @@ public class Ecosistema {
                 // para que el metodo default verificarMuerte() de Mortal procese la baja
                 if (ent.getEnergia() <= 0) {
                     ent.setViva(true);
-                    eventosTurnoActual.add(ent.getNombre() + " murio de inanicion / agotamiento");
+                    eventosTurnoActual.add("MUERTE: " + ent.getNombre() + " murio por quedarse sin energia");
                 }
             }
         }
