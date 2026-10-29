@@ -1,25 +1,16 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package simuladorecosistema.controlador;
-
-/**
- *
- * @author felipemolina
- */
-public class ControladorSimulacion {
-    
-}
 package simuladorecosistema.controlador;
 
 import java.util.ArrayList;
+import simuladorecosistema.dao.ResultadoCarga;
+import simuladorecosistema.dao.SimulacionDAO;
 import simuladorecosistema.modelo.Clima;
 import simuladorecosistema.modelo.Ecosistema;
 import simuladorecosistema.modelo.ReporteFinal;
+import simuladorecosistema.modelo.Snapshot;
 import simuladorecosistema.vista.IVista;
 
-// Maneja el ciclo de la simulacion: crear, avanzar turnos, intervenir y detectar el fin.
+// Maneja el ciclo de la simulacion: crear, avanzar turnos, intervenir, detectar el fin,
+// guardar, cargar y pedir el reporte final.
 // Solo habla con la vista a traves de IVista; no usa Swing ni consola.
 public class ControladorSimulacion {
 
@@ -28,11 +19,17 @@ public class ControladorSimulacion {
 
     private final IVista vista;
     private final ValidadorConfiguracion validador;
+    private final SimulacionDAO dao;
     private Ecosistema ecosistema;
     private boolean terminada;
 
     public ControladorSimulacion(IVista vista) {
+        this(vista, new SimulacionDAO());
+    }
+
+    public ControladorSimulacion(IVista vista, SimulacionDAO dao) {
         this.vista = vista;
+        this.dao = dao;
         this.validador = new ValidadorConfiguracion();
         this.ecosistema = null;
         this.terminada = false;
@@ -88,6 +85,7 @@ public class ControladorSimulacion {
         if (ecosistema.ecosistemaColapsado() || ecosistema.getTurnoActual() >= ecosistema.getTurnosTotales()) {
             terminada = true;
             vista.mostrarMensaje(motivoDeFin());
+            vista.mostrarReporte(ecosistema.obtenerReporteFinal());
         } else if (ecosistema.getTurnoActual() % TURNOS_ENTRE_INTERVENCIONES == 0) {
             vista.ofrecerIntervencion(ecosistema.getTurnoActual());
         }
@@ -121,6 +119,58 @@ public class ControladorSimulacion {
             return false;
         }
         mostrarEstado();
+        return true;
+    }
+
+    // Guarda la simulacion actual con el DAO. Devuelve true si quedo guardada.
+    public boolean guardar() {
+        if (!hayEcosistema()) {
+            vista.mostrarError("No hay una simulacion para guardar");
+            return false;
+        }
+        if (!dao.guardar(ecosistema.exportarSnapshot())) {
+            vista.mostrarError("No se pudo guardar la simulacion");
+            return false;
+        }
+        vista.mostrarMensaje("Simulacion guardada");
+        return true;
+    }
+
+    // Carga la simulacion guardada y la deja lista para seguir. Devuelve true si se cargo.
+    public boolean cargar() {
+        ResultadoCarga resultado = dao.cargar();
+        if (!resultado.esExitoso()) {
+            vista.mostrarError(resultado.getError());
+            return false;
+        }
+        Snapshot snapshot = resultado.getSnapshot();
+        Ecosistema cargado;
+        try {
+            cargado = Ecosistema.desdeSnapshot(snapshot);
+        } catch (IllegalArgumentException e) {
+            vista.mostrarError("La simulacion guardada no es valida");
+            return false;
+        }
+
+        ecosistema = cargado;
+        terminada = ecosistema.ecosistemaColapsado()
+                || ecosistema.getTurnoActual() >= ecosistema.getTurnosTotales();
+        mostrarEstado();
+        vista.mostrarMensaje("Simulacion cargada");
+        return true;
+    }
+
+    // Pide el reporte final al modelo y se lo entrega a la vista (solo si la simulacion termino)
+    public boolean mostrarReporte() {
+        if (!hayEcosistema()) {
+            vista.mostrarError("No hay una simulacion en marcha");
+            return false;
+        }
+        if (!terminada) {
+            vista.mostrarError("La simulacion todavia no termino");
+            return false;
+        }
+        vista.mostrarReporte(ecosistema.obtenerReporteFinal());
         return true;
     }
 
