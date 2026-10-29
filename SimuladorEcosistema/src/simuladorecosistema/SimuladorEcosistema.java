@@ -1,13 +1,19 @@
 package simuladorecosistema;
 
+import simuladorecosistema.controlador.ControladorSimulacion;
+import simuladorecosistema.stubs.VistaStub;
+import simuladorecosistema.vista.IVista;
+
 /**
  * Punto de entrada de la aplicación.
- * Ya no hay interfaz de consola: acá se va a abrir la ventana principal
- * cuando exista la vista (Fase 3).
+ * Arma el controlador con una vista. Mientras no exista la vista real (Fase 3),
+ * se usa VistaStub; al integrar, se reemplaza por la ventana principal.
  */
 public class SimuladorEcosistema {
 
     public static void main(String[] args) {
-        // Se completa cuando exista la vista.
+        IVista vista = new VistaStub(); // TODO: reemplazar por la ventana principal
+        ControladorSimulacion controlador = new ControladorSimulacion(vista);
+        // La carga de la simulación guardada al arrancar se agrega en la Tarea 15.
     }
 }
