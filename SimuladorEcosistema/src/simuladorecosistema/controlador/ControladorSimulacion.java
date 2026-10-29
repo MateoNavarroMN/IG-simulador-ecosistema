@@ -11,6 +11,11 @@ import simuladorecosistema.vista.IVista;
 
 // Maneja el ciclo de la simulacion: crear, avanzar turnos, intervenir, detectar el fin,
 // guardar, cargar y pedir el reporte final.
+//
+// CUANDO SE GUARDA: de forma automatica al crear una simulacion nueva, despues de cada turno
+// (incluido el ultimo) y despues de cada intervencion (cambiar el clima o agregar una entidad).
+// Asi lo guardado siempre es el ultimo estado. Tambien se puede guardar a mano con guardar().
+// Al abrir la aplicacion, iniciar() carga lo guardado.
 // Solo habla con la vista a traves de IVista; no usa Swing ni consola.
 public class ControladorSimulacion {
 
@@ -64,6 +69,7 @@ public class ControladorSimulacion {
         ecosistema = nuevo;
         terminada = false;
         mostrarEstado();
+        guardarAutomatico();
         return true;
     }
 
@@ -89,6 +95,7 @@ public class ControladorSimulacion {
         } else if (ecosistema.getTurnoActual() % TURNOS_ENTRE_INTERVENCIONES == 0) {
             vista.ofrecerIntervencion(ecosistema.getTurnoActual());
         }
+        guardarAutomatico();
     }
 
     // Intervencion: cambiar el clima
@@ -102,6 +109,7 @@ public class ControladorSimulacion {
         }
         ecosistema.cambiarClima(nuevo);
         mostrarEstado();
+        guardarAutomatico();
         return true;
     }
 
@@ -119,7 +127,39 @@ public class ControladorSimulacion {
             return false;
         }
         mostrarEstado();
+        guardarAutomatico();
         return true;
+    }
+
+    // Se llama una vez al abrir la aplicacion: carga la simulacion guardada y la muestra.
+    // Si no hay archivo o esta danado, avisa a la vista que no hay simulacion en marcha.
+    // Una simulacion guardada que ya habia terminado muestra su reporte.
+    public void iniciar() {
+        ResultadoCarga resultado = dao.cargar();
+        if (resultado.isArchivoInexistente()) {
+            vista.mostrarSinSimulacion("No hay una simulacion guardada");
+            return;
+        }
+        if (!resultado.esExitoso()) {
+            vista.mostrarSinSimulacion("La simulacion guardada no se pudo cargar: " + resultado.getError());
+            return;
+        }
+        Ecosistema cargado;
+        try {
+            cargado = Ecosistema.desdeSnapshot(resultado.getSnapshot());
+        } catch (IllegalArgumentException e) {
+            vista.mostrarSinSimulacion("La simulacion guardada no es valida");
+            return;
+        }
+
+        ecosistema = cargado;
+        terminada = ecosistema.ecosistemaColapsado()
+                || ecosistema.getTurnoActual() >= ecosistema.getTurnosTotales();
+        mostrarEstado();
+        vista.mostrarMensaje("Se cargo la simulacion guardada");
+        if (terminada) {
+            vista.mostrarReporte(ecosistema.obtenerReporteFinal());
+        }
     }
 
     // Guarda la simulacion actual con el DAO. Devuelve true si quedo guardada.
@@ -192,6 +232,13 @@ public class ControladorSimulacion {
             return false;
         }
         return true;
+    }
+
+    // Guardado silencioso: solo avisa a la vista si falla
+    private void guardarAutomatico() {
+        if (!dao.guardar(ecosistema.exportarSnapshot())) {
+            vista.mostrarError("No se pudo guardar la simulacion automaticamente");
+        }
     }
 
     private void mostrarEstado() {
