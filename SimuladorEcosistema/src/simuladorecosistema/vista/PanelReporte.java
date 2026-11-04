@@ -3,16 +3,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package simuladorecosistema.vista;
+import javax.swing.table.DefaultTableModel;
+import simuladorecosistema.modelo.Entidad;
+import simuladorecosistema.modelo.Lobo;
+import simuladorecosistema.modelo.ReporteFinal;
 
-/**
- *
- * @author Agos
- */
 public class PanelReporte extends javax.swing.JPanel {
 
-    /**
-     * Creates new form PanelReporte
-     */
+    private VentanaPrincipal ventana;
+    
     public PanelReporte() {
         initComponents();
     }
@@ -26,18 +25,172 @@ public class PanelReporte extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        lblTitulo = new javax.swing.JLabel();
+        lblCausa = new javax.swing.JLabel();
+        lblMayorActividad = new javax.swing.JLabel();
+        lblPlantaLongeva = new javax.swing.JLabel();
+        lblConejoLongevo = new javax.swing.JLabel();
+        lblLoboLongevo = new javax.swing.JLabel();
+        lblMejorCazador = new javax.swing.JLabel();
+        scrollBalance = new javax.swing.JScrollPane();
+        tblBalance = new javax.swing.JTable();
+        jPanel1 = new javax.swing.JPanel();
+        btnVolver = new javax.swing.JButton();
 
-        setLayout(new java.awt.GridBagLayout());
+        lblTitulo.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        lblTitulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTitulo.setText("Reporte final");
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Reporte");
-        add(jLabel1, new java.awt.GridBagConstraints());
+        lblCausa.setText("Causa de fin");
+
+        lblMayorActividad.setText("Turno de mayor actividad");
+
+        lblPlantaLongeva.setText("Planta más longeva");
+
+        lblConejoLongevo.setText("Conejo más longevo");
+
+        lblLoboLongevo.setText("Lobo más longevo");
+
+        lblMejorCazador.setText("Lobo con más cacerías");
+
+        tblBalance.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        scrollBalance.setViewportView(tblBalance);
+
+        btnVolver.setText("Volver a configuración");
+        btnVolver.addActionListener(this::btnVolverActionPerformed);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(lblTitulo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(scrollBalance))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(51, 51, 51)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(lblMayorActividad, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(lblPlantaLongeva)
+                                    .addComponent(lblConejoLongevo)
+                                    .addComponent(lblLoboLongevo)
+                                    .addComponent(lblMejorCazador)
+                                    .addComponent(lblCausa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(197, 197, 197)
+                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(210, 210, 210)
+                .addComponent(btnVolver, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                .addGap(211, 211, 211))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addComponent(lblTitulo)
+                .addGap(18, 18, 18)
+                .addComponent(lblCausa)
+                .addGap(18, 18, 18)
+                .addComponent(lblMayorActividad)
+                .addGap(18, 18, 18)
+                .addComponent(lblPlantaLongeva)
+                .addGap(18, 18, 18)
+                .addComponent(lblConejoLongevo)
+                .addGap(18, 18, 18)
+                .addComponent(lblLoboLongevo)
+                .addGap(18, 18, 18)
+                .addComponent(lblMejorCazador)
+                .addGap(18, 18, 18)
+                .addComponent(scrollBalance, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnVolver)
+                .addGap(32, 32, 32)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
+        ventana.mostrarPantalla(VentanaPrincipal.CONFIGURACION);
+    }//GEN-LAST:event_btnVolverActionPerformed
+
+    // La ventana se la pasa a cada panel justo después de crearlo
+    public void setVentana(VentanaPrincipal ventana) {
+        this.ventana = ventana;
+    }
+
+    // Carga los datos del reporte final en las etiquetas y en la tabla
+    public void mostrarReporte(ReporteFinal reporte) {
+        if (reporte.isColapso()) {
+            lblCausa.setText("Causa de fin: colapso del ecosistema en el turno " + reporte.getTurnoFinal()
+                    + " (se extinguieron: " + String.join(", ", reporte.getEspeciesExtintas()) + ")");
+        } else {
+            lblCausa.setText("Causa de fin: se completaron los " + reporte.getTurnosTotales() + " turnos configurados");
+        }
+
+        lblMayorActividad.setText("Turno de mayor actividad: " + reporte.getTurnoMayorActividad()
+                + " (" + reporte.getEventosMayorActividad() + " eventos registrados)");
+
+        lblPlantaLongeva.setText(describirLongeva("Planta más longeva", reporte.getPlantaMasLongeva()));
+        lblConejoLongevo.setText(describirLongeva("Conejo más longevo", reporte.getConejoMasLongevo()));
+        lblLoboLongevo.setText(describirLongeva("Lobo más longevo", reporte.getLoboMasLongevo()));
+
+        Lobo cazador = reporte.getMejorCazador();
+        if (cazador != null) {
+            lblMejorCazador.setText("Lobo con más cacerías exitosas: " + cazador.getNombre()
+                    + " (" + cazador.getExitosCaza() + " cacerías)");
+        } else {
+            lblMejorCazador.setText("Lobo con más cacerías exitosas: sin registros");
+        }
+
+        String[] columnas = {"Tipo", "Nacimientos", "Muertes", "Vivos al final"};
+        Object[][] filas = {
+            {"Plantas", reporte.getNacimientosPlantas(), reporte.getMuertesPlantas(), reporte.getPlantasVivas()},
+            {"Conejos", reporte.getNacimientosConejos(), reporte.getMuertesConejos(), reporte.getConejosVivos()},
+            {"Lobos", 0, reporte.getMuertesLobos(), reporte.getLobosVivos()}
+        };
+        tblBalance.setModel(new DefaultTableModel(filas, columnas) {
+            @Override
+            public boolean isCellEditable(int fila, int columna) {
+                return false;
+            }
+        });
+    }
+
+    private String describirLongeva(String titulo, Entidad entidad) {
+        if (entidad == null) {
+            return titulo + ": N/A";
+        }
+        return titulo + ": " + entidad.getNombre() + " (" + entidad.getEdad() + " turnos)";
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton btnVolver;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel lblCausa;
+    private javax.swing.JLabel lblConejoLongevo;
+    private javax.swing.JLabel lblLoboLongevo;
+    private javax.swing.JLabel lblMayorActividad;
+    private javax.swing.JLabel lblMejorCazador;
+    private javax.swing.JLabel lblPlantaLongeva;
+    private javax.swing.JLabel lblTitulo;
+    private javax.swing.JScrollPane scrollBalance;
+    private javax.swing.JTable tblBalance;
     // End of variables declaration//GEN-END:variables
 }
