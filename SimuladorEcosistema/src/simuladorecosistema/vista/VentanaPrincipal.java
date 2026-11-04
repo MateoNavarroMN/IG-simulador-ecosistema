@@ -18,6 +18,7 @@ public class VentanaPrincipal extends javax.swing.JFrame implements IVista {
         setSize(800, 600);
         setLocationRelativeTo(null);
         controlador = new ControladorSimulacion(this);
+        panelConfiguracion.setVentana(this);
     }
     public static final String CONFIGURACION = "configuracion";
     public static final String SIMULACION = "simulacion";
@@ -124,11 +125,15 @@ public class VentanaPrincipal extends javax.swing.JFrame implements IVista {
 
     // Implementación de IVista 
 
-    @Override
+   @Override
     public void mostrarError(String mensaje) {
-        JOptionPane.showMessageDialog(this, mensaje, "Aviso", JOptionPane.WARNING_MESSAGE);
+        if (CONFIGURACION.equals(pantallaActual)) {
+            panelConfiguracion.mostrarErrores(mensaje);
+        } else {
+            JOptionPane.showMessageDialog(this, mensaje, "Aviso", JOptionPane.WARNING_MESSAGE);
+        }
     }
-
+    
     @Override
     public void mostrarMensaje(String mensaje) {
         lblEstado.setText(mensaje);
