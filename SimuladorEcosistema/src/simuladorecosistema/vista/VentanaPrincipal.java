@@ -19,6 +19,7 @@ public class VentanaPrincipal extends javax.swing.JFrame implements IVista {
         setLocationRelativeTo(null);
         controlador = new ControladorSimulacion(this);
         panelConfiguracion.setVentana(this);
+        panelReporte.setVentana(this);
     }
     public static final String CONFIGURACION = "configuracion";
     public static final String SIMULACION = "simulacion";
@@ -158,6 +159,7 @@ public class VentanaPrincipal extends javax.swing.JFrame implements IVista {
 
     @Override
     public void mostrarReporte(ReporteFinal reporte) {
+        panelReporte.mostrarReporte(reporte);
         mostrarPantalla(REPORTE);
     }
 
