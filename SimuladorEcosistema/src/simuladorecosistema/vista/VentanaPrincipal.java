@@ -46,6 +46,11 @@ public class VentanaPrincipal extends javax.swing.JFrame implements IVista {
         btnSimulacion = new javax.swing.JButton();
         btnReporte = new javax.swing.JButton();
         lblEstado = new javax.swing.JLabel();
+        barraMenu = new javax.swing.JMenuBar();
+        menuSimulacion = new javax.swing.JMenu();
+        itemNueva = new javax.swing.JMenuItem();
+        menuReportes = new javax.swing.JMenu();
+        itemVerReporte = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Simulador de Ecosistema");
@@ -76,6 +81,24 @@ public class VentanaPrincipal extends javax.swing.JFrame implements IVista {
         lblEstado.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
         getContentPane().add(lblEstado, java.awt.BorderLayout.SOUTH);
 
+        menuSimulacion.setText("Simulación");
+
+        itemNueva.setText("Nueva");
+        itemNueva.addActionListener(this::itemNuevaActionPerformed);
+        menuSimulacion.add(itemNueva);
+
+        barraMenu.add(menuSimulacion);
+
+        menuReportes.setText("Reportes");
+
+        itemVerReporte.setText("Ver reporte");
+        itemVerReporte.addActionListener(this::itemVerReporteActionPerformed);
+        menuReportes.add(itemVerReporte);
+
+        barraMenu.add(menuReportes);
+
+        setJMenuBar(barraMenu);
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -90,6 +113,14 @@ public class VentanaPrincipal extends javax.swing.JFrame implements IVista {
     private void btnConfiguracionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfiguracionActionPerformed
         irAConfiguracion();
     }//GEN-LAST:event_btnConfiguracionActionPerformed
+
+    private void itemNuevaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemNuevaActionPerformed
+        irAConfiguracion();
+    }//GEN-LAST:event_itemNuevaActionPerformed
+
+    private void itemVerReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemVerReporteActionPerformed
+        verReporte();
+    }//GEN-LAST:event_itemVerReporteActionPerformed
 
         public ControladorSimulacion getControlador() {
         return controlador;
@@ -170,11 +201,16 @@ public class VentanaPrincipal extends javax.swing.JFrame implements IVista {
     }
    
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuBar barraMenu;
     private javax.swing.JButton btnConfiguracion;
     private javax.swing.JButton btnReporte;
     private javax.swing.JButton btnSimulacion;
+    private javax.swing.JMenuItem itemNueva;
+    private javax.swing.JMenuItem itemVerReporte;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lblEstado;
+    private javax.swing.JMenu menuReportes;
+    private javax.swing.JMenu menuSimulacion;
     private simuladorecosistema.vista.PanelConfiguracion panelConfiguracion;
     private javax.swing.JPanel panelContenedor;
     private simuladorecosistema.vista.PanelReporte panelReporte;
