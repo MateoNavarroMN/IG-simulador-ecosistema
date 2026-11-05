@@ -252,7 +252,7 @@ public class PanelSimulacion extends javax.swing.JPanel {
         actualizarTabla();
     }
 
-    // Muestra los eventos del turno que acaba de procesarse
+        // Muestra los eventos del turno que acaba de procesarse y avisa cuántos hubo
     public void mostrarEventos(ArrayList<String> eventos) {
         modeloEventos.clear();
         if (eventos.isEmpty()) {
@@ -261,8 +261,8 @@ public class PanelSimulacion extends javax.swing.JPanel {
         for (String evento : eventos) {
             modeloEventos.addElement(evento);
         }
+        mostrarMensaje("Turno procesado: " + eventos.size() + " eventos", false);
     }
-
     // Mensaje de estado debajo de la tabla; en rojo si es un error
     public void mostrarMensaje(String texto, boolean error) {
         lblMensaje.setText(texto);
