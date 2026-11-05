@@ -153,14 +153,14 @@ public class VentanaPrincipal extends javax.swing.JFrame implements IVista {
         controlador.mostrarReporte();
     }
 
-    // Implementación de IVista 
-
+    
    @Override
     public void mostrarError(String mensaje) {
         if (CONFIGURACION.equals(pantallaActual)) {
             panelConfiguracion.mostrarErrores(mensaje);
         } else {
-            JOptionPane.showMessageDialog(this, mensaje, "Aviso", JOptionPane.WARNING_MESSAGE);
+            panelSimulacion.mostrarMensaje(mensaje, true);
+            JOptionPane.showMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
     
@@ -177,10 +177,13 @@ public class VentanaPrincipal extends javax.swing.JFrame implements IVista {
         panelSimulacion.mostrarEventos(eventos);
     }
 
-    @Override
+     @Override
     public void mostrarMensaje(String mensaje) {
         lblEstado.setText(mensaje);
         panelSimulacion.mostrarMensaje(mensaje, false);
+        if (mensaje.startsWith("La simulacion termino")) {
+            JOptionPane.showMessageDialog(this, mensaje, "Fin de la simulación", JOptionPane.INFORMATION_MESSAGE);
+        }
     }
 
     @Override
