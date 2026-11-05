@@ -11,6 +11,8 @@ import simuladorecosistema.modelo.Conejo;
 import simuladorecosistema.modelo.Lobo;
 import simuladorecosistema.modelo.Planta;
 import simuladorecosistema.modelo.Snapshot;
+import javax.swing.JOptionPane;
+import simuladorecosistema.controlador.ControladorSimulacion;
 
 public class PanelSimulacion extends javax.swing.JPanel {
 
@@ -23,6 +25,7 @@ public class PanelSimulacion extends javax.swing.JPanel {
         initComponents();
         lstEventos.setModel(modeloEventos);
         tblEntidades.setModel(crearModeloTabla(new Object[0][]));
+        setSimulacionActiva(false);
     }
 
     
@@ -37,19 +40,23 @@ public class PanelSimulacion extends javax.swing.JPanel {
         lblPlantas = new javax.swing.JLabel();
         lblConejos = new javax.swing.JLabel();
         lblLobos = new javax.swing.JLabel();
+        lblSinSimulacion = new javax.swing.JLabel();
         tabsCentro = new javax.swing.JTabbedPane();
         scrollEntidades = new javax.swing.JScrollPane();
         tblEntidades = new javax.swing.JTable();
         panelSur = new javax.swing.JPanel();
         panelAcciones = new javax.swing.JPanel();
         btnAvanzar = new javax.swing.JButton();
+        btnNueva = new javax.swing.JButton();
+        btnGuardar = new javax.swing.JButton();
+        btnCargar = new javax.swing.JButton();
         lblMensaje = new javax.swing.JLabel();
         scrollEventos = new javax.swing.JScrollPane();
         lstEventos = new javax.swing.JList<>();
 
         setLayout(new java.awt.BorderLayout());
 
-        panelNorte.setLayout(new java.awt.GridLayout());
+        panelNorte.setLayout(new java.awt.GridLayout(2, 1));
 
         panelContadores.setLayout(new java.awt.GridLayout(1, 5));
 
@@ -69,6 +76,11 @@ public class PanelSimulacion extends javax.swing.JPanel {
         panelContadores.add(lblLobos);
 
         panelNorte.add(panelContadores);
+
+        lblSinSimulacion.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lblSinSimulacion.setForeground(new java.awt.Color(255, 51, 51));
+        lblSinSimulacion.setText("No hay una simulación en curso. Creá una nueva o cargá la guardada");
+        panelNorte.add(lblSinSimulacion);
 
         add(panelNorte, java.awt.BorderLayout.PAGE_START);
 
@@ -95,6 +107,18 @@ public class PanelSimulacion extends javax.swing.JPanel {
         btnAvanzar.addActionListener(this::btnAvanzarActionPerformed);
         panelAcciones.add(btnAvanzar);
 
+        btnNueva.setText("Nueva simulación");
+        btnNueva.addActionListener(this::btnNuevaActionPerformed);
+        panelAcciones.add(btnNueva);
+
+        btnGuardar.setText("Guardar");
+        btnGuardar.addActionListener(this::btnGuardarActionPerformed);
+        panelAcciones.add(btnGuardar);
+
+        btnCargar.setText("Cargar");
+        btnCargar.addActionListener(this::btnCargarActionPerformed);
+        panelAcciones.add(btnCargar);
+
         panelSur.add(panelAcciones);
         panelSur.add(lblMensaje);
 
@@ -120,6 +144,36 @@ public class PanelSimulacion extends javax.swing.JPanel {
             ventana.getControlador().avanzarTurno();
     }//GEN-LAST:event_btnAvanzarActionPerformed
 
+    private void btnNuevaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevaActionPerformed
+        ControladorSimulacion controlador = ventana.getControlador();
+        if (controlador.hayEcosistema() && !controlador.estaTerminada()) {
+            int respuesta = JOptionPane.showConfirmDialog(this,
+                    "Hay una simulación en curso. ¿Querés empezar una nueva?",
+                    "Nueva simulación", JOptionPane.YES_NO_OPTION);
+            if (respuesta != JOptionPane.YES_OPTION) {
+                return;
+            }
+        }
+        ventana.mostrarPantalla(VentanaPrincipal.CONFIGURACION);
+    }//GEN-LAST:event_btnNuevaActionPerformed
+
+    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
+         ventana.getControlador().guardar();
+    }//GEN-LAST:event_btnGuardarActionPerformed
+
+    private void btnCargarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCargarActionPerformed
+        ControladorSimulacion controlador = ventana.getControlador();
+        if (controlador.hayEcosistema() && !controlador.estaTerminada()) {
+            int respuesta = JOptionPane.showConfirmDialog(this,
+                    "Se va a reemplazar la simulación actual por la guardada. ¿Continuar?",
+                    "Cargar simulación", JOptionPane.YES_NO_OPTION);
+            if (respuesta != JOptionPane.YES_OPTION) {
+                return;
+            }
+        }
+        controlador.cargar();
+    }//GEN-LAST:event_btnCargarActionPerformed
+
     // La ventana se la pasa a cada panel justo después de crearlo
     public void setVentana(VentanaPrincipal ventana) {
         this.ventana = ventana;
@@ -127,6 +181,7 @@ public class PanelSimulacion extends javax.swing.JPanel {
 
     // Actualiza los contadores y la tabla; el controlador lo llama al iniciar y después de cada turno
     public void actualizarEstado(int turno, int total, int plantas, int conejos, int lobos, String clima) {
+        setSimulacionActiva(true);
         turnoActual = turno;
         turnosTotales = total;
         lblTurno.setText("Turno: " + turno + " / " + total);
@@ -189,14 +244,42 @@ public class PanelSimulacion extends javax.swing.JPanel {
             }
         };
     }
+    
+    // Con simulación: se ven los datos y los botones; sin simulación: aviso y botones apagados
+    public void setSimulacionActiva(boolean activa) {
+        lblSinSimulacion.setVisible(!activa);
+        btnAvanzar.setEnabled(activa);
+        btnGuardar.setEnabled(activa);
+        if (!activa) {
+            turnoActual = 0;
+            turnosTotales = 0;
+            lblTurno.setText("Turno: -");
+            lblClima.setText("Clima: -");
+            lblPlantas.setText("Plantas: -");
+            lblConejos.setText("Conejos: -");
+            lblLobos.setText("Lobos: -");
+            modeloEventos.clear();
+            tblEntidades.setModel(crearModeloTabla(new Object[0][]));
+        }
+    }
+
+    // La ventana lo llama cuando no hay simulación (primer arranque o archivo inexistente o dañado)
+    public void mostrarSinSimulacion(String motivo) {
+        setSimulacionActiva(false);
+        mostrarMensaje(motivo, false);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAvanzar;
+    private javax.swing.JButton btnCargar;
+    private javax.swing.JButton btnGuardar;
+    private javax.swing.JButton btnNueva;
     private javax.swing.JLabel lblClima;
     private javax.swing.JLabel lblConejos;
     private javax.swing.JLabel lblLobos;
     private javax.swing.JLabel lblMensaje;
     private javax.swing.JLabel lblPlantas;
+    private javax.swing.JLabel lblSinSimulacion;
     private javax.swing.JLabel lblTurno;
     private javax.swing.JList<String> lstEventos;
     private javax.swing.JPanel panelAcciones;
