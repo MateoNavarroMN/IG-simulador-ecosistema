@@ -55,6 +55,7 @@ public class VentanaPrincipal extends javax.swing.JFrame implements IVista {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Simulador de Ecosistema");
+        setMinimumSize(new java.awt.Dimension(900, 600));
         getContentPane().setLayout(new java.awt.BorderLayout());
 
         panelContenedor.setLayout(new java.awt.CardLayout());

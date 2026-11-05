@@ -136,7 +136,7 @@ public class PanelSimulacion extends javax.swing.JPanel {
 
         panelSur.add(panelAcciones);
 
-        panelIntervencion.setBorder(javax.swing.BorderFactory.createTitledBorder("Intervención"));
+        panelIntervencion.setBorder(javax.swing.BorderFactory.createTitledBorder("Intervención:\n"));
         panelIntervencion.setPreferredSize(new java.awt.Dimension(646, 100));
 
         lblIntervencion.setText("Intervención deshabilitada");
@@ -163,7 +163,7 @@ public class PanelSimulacion extends javax.swing.JPanel {
 
         add(panelSur, java.awt.BorderLayout.SOUTH);
 
-        scrollEventos.setBorder(javax.swing.BorderFactory.createTitledBorder("Eventos del turno"));
+        scrollEventos.setBorder(javax.swing.BorderFactory.createTitledBorder("Eventos del turno\n"));
         scrollEventos.setToolTipText("");
         scrollEventos.setPreferredSize(new java.awt.Dimension(320, 100));
 
