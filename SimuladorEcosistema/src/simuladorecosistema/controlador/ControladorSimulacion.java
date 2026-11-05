@@ -214,6 +214,14 @@ public class ControladorSimulacion {
         return true;
     }
 
+    // Foto del estado actual para que la vista arme la tabla de entidades (null si no hay simulacion)
+    public Snapshot getSnapshot() {
+        if (!hayEcosistema()) {
+            return null;
+        }
+        return ecosistema.exportarSnapshot();
+    }
+
     public boolean hayEcosistema() {
         return ecosistema != null;
     }

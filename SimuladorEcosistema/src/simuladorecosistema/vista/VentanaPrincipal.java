@@ -20,6 +20,7 @@ public class VentanaPrincipal extends javax.swing.JFrame implements IVista {
         controlador = new ControladorSimulacion(this);
         panelConfiguracion.setVentana(this);
         panelReporte.setVentana(this);
+        panelSimulacion.setVentana(this);
     }
     public static final String CONFIGURACION = "configuracion";
     public static final String SIMULACION = "simulacion";
@@ -167,20 +168,22 @@ public class VentanaPrincipal extends javax.swing.JFrame implements IVista {
     }
     
     @Override
-    public void mostrarMensaje(String mensaje) {
-        lblEstado.setText(mensaje);
-    }
-
-    @Override
     public void mostrarEstado(int turnoActual, int turnosTotales, int plantas, int conejos, int lobos, String clima) {
         lblEstado.setText("Turno " + turnoActual + "/" + turnosTotales + " | Plantas: " + plantas
                 + " | Conejos: " + conejos + " | Lobos: " + lobos + " | Clima: " + clima);
+        panelSimulacion.actualizarEstado(turnoActual, turnosTotales, plantas, conejos, lobos, clima);
         mostrarPantalla(SIMULACION);
     }
 
     @Override
     public void mostrarEventos(ArrayList<String> eventos) {
-        // Lo completa la Tarea 20 (PanelSimulacion)
+        panelSimulacion.mostrarEventos(eventos);
+    }
+
+    @Override
+    public void mostrarMensaje(String mensaje) {
+        lblEstado.setText(mensaje);
+        panelSimulacion.mostrarMensaje(mensaje, false);
     }
 
     @Override
