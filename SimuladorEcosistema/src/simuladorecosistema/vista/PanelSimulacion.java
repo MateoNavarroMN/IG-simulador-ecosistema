@@ -13,6 +13,7 @@ import simuladorecosistema.modelo.Planta;
 import simuladorecosistema.modelo.Snapshot;
 import javax.swing.JOptionPane;
 import simuladorecosistema.controlador.ControladorSimulacion;
+import simuladorecosistema.modelo.Clima;
 
 public class PanelSimulacion extends javax.swing.JPanel {
 
@@ -26,6 +27,13 @@ public class PanelSimulacion extends javax.swing.JPanel {
         lstEventos.setModel(modeloEventos);
         tblEntidades.setModel(crearModeloTabla(new Object[0][]));
         setSimulacionActiva(false);
+         // Carga los combos de la intervención
+        String[] nombresClimas = new String[Clima.values().length];
+        for (int i = 0; i < nombresClimas.length; i++) {
+            nombresClimas[i] = Clima.values()[i].getNombre();
+        }
+        cmbClimaNuevo.setModel(new javax.swing.DefaultComboBoxModel<>(nombresClimas));
+        cmbEntidad.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{"Planta", "Conejo", "Lobo"}));
     }
 
     
@@ -50,6 +58,13 @@ public class PanelSimulacion extends javax.swing.JPanel {
         btnNueva = new javax.swing.JButton();
         btnGuardar = new javax.swing.JButton();
         btnCargar = new javax.swing.JButton();
+        panelIntervencion = new javax.swing.JPanel();
+        lblIntervencion = new javax.swing.JLabel();
+        cmbClimaNuevo = new javax.swing.JComboBox<>();
+        btnCambiarClima = new javax.swing.JButton();
+        cmbEntidad = new javax.swing.JComboBox<>();
+        btnAgregar = new javax.swing.JButton();
+        btnSoloAvanzar = new javax.swing.JButton();
         lblMensaje = new javax.swing.JLabel();
         scrollEventos = new javax.swing.JScrollPane();
         lstEventos = new javax.swing.JList<>();
@@ -101,7 +116,7 @@ public class PanelSimulacion extends javax.swing.JPanel {
 
         add(tabsCentro, java.awt.BorderLayout.LINE_START);
 
-        panelSur.setLayout(new java.awt.GridLayout(2, 1));
+        panelSur.setLayout(new java.awt.GridLayout(3, 1));
 
         btnAvanzar.setText("Avanzar turno");
         btnAvanzar.addActionListener(this::btnAvanzarActionPerformed);
@@ -120,6 +135,30 @@ public class PanelSimulacion extends javax.swing.JPanel {
         panelAcciones.add(btnCargar);
 
         panelSur.add(panelAcciones);
+
+        panelIntervencion.setBorder(javax.swing.BorderFactory.createTitledBorder("Intervención"));
+        panelIntervencion.setPreferredSize(new java.awt.Dimension(646, 100));
+
+        lblIntervencion.setText("Intervención deshabilitada");
+        panelIntervencion.add(lblIntervencion);
+
+        panelIntervencion.add(cmbClimaNuevo);
+
+        btnCambiarClima.setText("Cambiar clima");
+        btnCambiarClima.addActionListener(this::btnCambiarClimaActionPerformed);
+        panelIntervencion.add(btnCambiarClima);
+
+        panelIntervencion.add(cmbEntidad);
+
+        btnAgregar.setText("Agregar entidad");
+        btnAgregar.addActionListener(this::btnAgregarActionPerformed);
+        panelIntervencion.add(btnAgregar);
+
+        btnSoloAvanzar.setText("Solo avanzar");
+        btnSoloAvanzar.addActionListener(this::btnSoloAvanzarActionPerformed);
+        panelIntervencion.add(btnSoloAvanzar);
+
+        panelSur.add(panelIntervencion);
         panelSur.add(lblMensaje);
 
         add(panelSur, java.awt.BorderLayout.SOUTH);
@@ -137,11 +176,11 @@ public class PanelSimulacion extends javax.swing.JPanel {
         scrollEventos.setViewportView(lstEventos);
 
         add(scrollEventos, java.awt.BorderLayout.EAST);
-        scrollEventos.getAccessibleContext().setAccessibleName("Eventos del turno");
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAvanzarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAvanzarActionPerformed
-            ventana.getControlador().avanzarTurno();
+        setIntervencionHabilitada(false);
+        ventana.getControlador().avanzarTurno();
     }//GEN-LAST:event_btnAvanzarActionPerformed
 
     private void btnNuevaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevaActionPerformed
@@ -173,6 +212,27 @@ public class PanelSimulacion extends javax.swing.JPanel {
         }
         controlador.cargar();
     }//GEN-LAST:event_btnCargarActionPerformed
+
+    private void btnCambiarClimaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCambiarClimaActionPerformed
+         Clima nuevo = Clima.values()[cmbClimaNuevo.getSelectedIndex()];
+        if (ventana.getControlador().cambiarClima(nuevo)) {
+            setIntervencionHabilitada(false);
+            mostrarMensaje("Clima cambiado a " + nuevo.getNombre(), false);
+        }
+    }//GEN-LAST:event_btnCambiarClimaActionPerformed
+
+    private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
+        String tipo = (String) cmbEntidad.getSelectedItem();
+        if (ventana.getControlador().agregarEntidad(tipo.toLowerCase())) {
+            setIntervencionHabilitada(false);
+            mostrarMensaje("Se agregó: " + tipo, false);
+        }
+    }//GEN-LAST:event_btnAgregarActionPerformed
+
+    private void btnSoloAvanzarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSoloAvanzarActionPerformed
+        setIntervencionHabilitada(false);
+        ventana.getControlador().avanzarTurno();
+    }//GEN-LAST:event_btnSoloAvanzarActionPerformed
 
     // La ventana se la pasa a cada panel justo después de crearlo
     public void setVentana(VentanaPrincipal ventana) {
@@ -260,6 +320,7 @@ public class PanelSimulacion extends javax.swing.JPanel {
             lblLobos.setText("Lobos: -");
             modeloEventos.clear();
             tblEntidades.setModel(crearModeloTabla(new Object[0][]));
+            setIntervencionHabilitada(false);
         }
     }
 
@@ -269,13 +330,47 @@ public class PanelSimulacion extends javax.swing.JPanel {
         mostrarMensaje(motivo, false);
     }
 
+    // El controlador lo llama cada 3 turnos: se habilitan los controles de intervención
+    public void ofrecerIntervencion(int turno) {
+        setIntervencionHabilitada(true);
+    }
+
+    // Habilita o deshabilita los controles de intervención y lo explica en la etiqueta
+    private void setIntervencionHabilitada(boolean habilitada) {
+        cmbClimaNuevo.setEnabled(habilitada);
+        btnCambiarClima.setEnabled(habilitada);
+        cmbEntidad.setEnabled(habilitada);
+        btnAgregar.setEnabled(habilitada);
+        btnSoloAvanzar.setEnabled(habilitada);
+
+        if (habilitada) {
+            lblIntervencion.setText("Podés intervenir ahora: cambiá el clima, agregá una entidad o avanzá sin cambios");
+        } else if (turnosTotales == 0) {
+            lblIntervencion.setText("Intervención deshabilitada");
+        } else {
+            int cada = ControladorSimulacion.TURNOS_ENTRE_INTERVENCIONES;
+            int proximo = (turnoActual / cada + 1) * cada;
+            if (proximo < turnosTotales) {
+                lblIntervencion.setText("Intervención deshabilitada. Próxima oportunidad: turno " + proximo);
+            } else {
+                lblIntervencion.setText("Intervención deshabilitada. No quedan más oportunidades");
+            }
+        }
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAgregar;
     private javax.swing.JButton btnAvanzar;
+    private javax.swing.JButton btnCambiarClima;
     private javax.swing.JButton btnCargar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnNueva;
+    private javax.swing.JButton btnSoloAvanzar;
+    private javax.swing.JComboBox<String> cmbClimaNuevo;
+    private javax.swing.JComboBox<String> cmbEntidad;
     private javax.swing.JLabel lblClima;
     private javax.swing.JLabel lblConejos;
+    private javax.swing.JLabel lblIntervencion;
     private javax.swing.JLabel lblLobos;
     private javax.swing.JLabel lblMensaje;
     private javax.swing.JLabel lblPlantas;
@@ -284,6 +379,7 @@ public class PanelSimulacion extends javax.swing.JPanel {
     private javax.swing.JList<String> lstEventos;
     private javax.swing.JPanel panelAcciones;
     private javax.swing.JPanel panelContadores;
+    private javax.swing.JPanel panelIntervencion;
     private javax.swing.JPanel panelNorte;
     private javax.swing.JPanel panelSur;
     private javax.swing.JScrollPane scrollEntidades;

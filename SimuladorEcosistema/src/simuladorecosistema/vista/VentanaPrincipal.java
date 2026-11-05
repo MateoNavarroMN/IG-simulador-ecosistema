@@ -55,6 +55,7 @@ public class VentanaPrincipal extends javax.swing.JFrame implements IVista {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Simulador de Ecosistema");
+        getContentPane().setLayout(new java.awt.BorderLayout());
 
         panelContenedor.setLayout(new java.awt.CardLayout());
         panelContenedor.add(panelConfiguracion, "card4");
@@ -184,7 +185,7 @@ public class VentanaPrincipal extends javax.swing.JFrame implements IVista {
 
     @Override
     public void ofrecerIntervencion(int turnoActual) {
-        // Lo completa la Tarea 22 (intervención cada 3 turnos)
+        panelSimulacion.ofrecerIntervencion(turnoActual);
     }
 
     @Override
