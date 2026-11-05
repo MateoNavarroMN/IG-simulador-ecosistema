@@ -144,12 +144,8 @@ public class VentanaPrincipal extends javax.swing.JFrame implements IVista {
         mostrarPantalla(CONFIGURACION);
     }
 
-    private void irASimulacion() {
-        if (controlador.hayEcosistema()) {
-            mostrarPantalla(SIMULACION);
-        } else {
-            mostrarError("No hay una simulación en marcha");
-        }
+     private void irASimulacion() {
+        mostrarPantalla(SIMULACION);
     }
 
     private void verReporte() {
@@ -200,7 +196,8 @@ public class VentanaPrincipal extends javax.swing.JFrame implements IVista {
     @Override
     public void mostrarSinSimulacion(String motivo) {
         lblEstado.setText(motivo);
-        mostrarPantalla(CONFIGURACION);
+        panelSimulacion.mostrarSinSimulacion(motivo);
+        mostrarPantalla(SIMULACION);
     }
    
     // Variables declaration - do not modify//GEN-BEGIN:variables
