@@ -5,6 +5,7 @@ import simuladorecosistema.dao.ResultadoCarga;
 import simuladorecosistema.dao.SimulacionDAO;
 import simuladorecosistema.modelo.Clima;
 import simuladorecosistema.modelo.Ecosistema;
+import simuladorecosistema.modelo.RegistroPoblacion;
 import simuladorecosistema.modelo.ReporteFinal;
 import simuladorecosistema.modelo.Snapshot;
 import simuladorecosistema.vista.IVista;
@@ -220,6 +221,14 @@ public class ControladorSimulacion {
             return null;
         }
         return ecosistema.exportarSnapshot();
+    }
+
+    // Poblacion por turno para el panel de estadisticas (vacia si no hay simulacion)
+    public ArrayList<RegistroPoblacion> getHistorialPoblacion() {
+        if (!hayEcosistema()) {
+            return new ArrayList<>();
+        }
+        return ecosistema.getHistorialPoblacion();
     }
 
     public boolean hayEcosistema() {
