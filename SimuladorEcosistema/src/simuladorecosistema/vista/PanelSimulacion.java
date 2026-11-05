@@ -55,6 +55,7 @@ public class PanelSimulacion extends javax.swing.JPanel {
         tabsCentro = new javax.swing.JTabbedPane();
         scrollEntidades = new javax.swing.JScrollPane();
         tblEntidades = new javax.swing.JTable();
+        panelEstadisticas = new simuladorecosistema.vista.PanelEstadisticas();
         panelSur = new javax.swing.JPanel();
         panelAcciones = new javax.swing.JPanel();
         btnAvanzar = new javax.swing.JButton();
@@ -117,6 +118,7 @@ public class PanelSimulacion extends javax.swing.JPanel {
         scrollEntidades.setViewportView(tblEntidades);
 
         tabsCentro.addTab("Entidades", scrollEntidades);
+        tabsCentro.addTab("Estadísticas", panelEstadisticas);
 
         add(tabsCentro, java.awt.BorderLayout.LINE_START);
 
@@ -140,7 +142,7 @@ public class PanelSimulacion extends javax.swing.JPanel {
 
         panelSur.add(panelAcciones);
 
-        panelIntervencion.setBorder(javax.swing.BorderFactory.createTitledBorder("Intervención"));
+        panelIntervencion.setBorder(javax.swing.BorderFactory.createTitledBorder("Intervención\n"));
         panelIntervencion.setPreferredSize(new java.awt.Dimension(646, 100));
 
         lblIntervencion.setText("Intervención deshabilitada");
@@ -297,7 +299,9 @@ public class PanelSimulacion extends javax.swing.JPanel {
             }
         }
         tblEntidades.setModel(crearModeloTabla(filas.toArray(new Object[0][])));
+        panelEstadisticas.mostrarHistorial(ventana.getControlador().getHistorialPoblacion());
     }
+
 
 
     private DefaultTableModel crearModeloTabla(Object[][] filas) {
@@ -316,7 +320,7 @@ public class PanelSimulacion extends javax.swing.JPanel {
         };
     }
     
-    // Con simulación: se ven los datos y los botones; sin simulación: aviso y botones apagados
+   // Con simulación: se ven los datos y los botones; sin simulación: aviso y botones apagados
     public void setSimulacionActiva(boolean activa) {
         lblSinSimulacion.setVisible(!activa);
         btnAvanzar.setEnabled(activa);
@@ -332,6 +336,7 @@ public class PanelSimulacion extends javax.swing.JPanel {
             modeloEventos.clear();
             tblEntidades.setModel(crearModeloTabla(new Object[0][]));
             setIntervencionHabilitada(false);
+            panelEstadisticas.limpiar();
         }
     }
 
@@ -401,6 +406,7 @@ public class PanelSimulacion extends javax.swing.JPanel {
     private javax.swing.JList<String> lstEventos;
     private javax.swing.JPanel panelAcciones;
     private javax.swing.JPanel panelContadores;
+    private simuladorecosistema.vista.PanelEstadisticas panelEstadisticas;
     private javax.swing.JPanel panelIntervencion;
     private javax.swing.JPanel panelNorte;
     private javax.swing.JPanel panelSur;
