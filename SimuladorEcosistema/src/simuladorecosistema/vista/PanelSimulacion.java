@@ -21,6 +21,9 @@ public class PanelSimulacion extends javax.swing.JPanel {
     private final DefaultListModel<String> modeloEventos = new DefaultListModel<>();
     private int turnoActual;
     private int turnosTotales;
+    private final javax.swing.ImageIcon iconoPlanta = cargarIcono("planta.png");
+    private final javax.swing.ImageIcon iconoConejo = cargarIcono("conejo.png");
+    private final javax.swing.ImageIcon iconoLobo = cargarIcono("lobo.png");
     
     public PanelSimulacion() {
         initComponents();
@@ -110,6 +113,7 @@ public class PanelSimulacion extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblEntidades.setRowHeight(32);
         scrollEntidades.setViewportView(tblEntidades);
 
         tabsCentro.addTab("Entidades", scrollEntidades);
@@ -136,7 +140,7 @@ public class PanelSimulacion extends javax.swing.JPanel {
 
         panelSur.add(panelAcciones);
 
-        panelIntervencion.setBorder(javax.swing.BorderFactory.createTitledBorder("Intervención:\n"));
+        panelIntervencion.setBorder(javax.swing.BorderFactory.createTitledBorder("Intervención"));
         panelIntervencion.setPreferredSize(new java.awt.Dimension(646, 100));
 
         lblIntervencion.setText("Intervención deshabilitada");
@@ -269,7 +273,7 @@ public class PanelSimulacion extends javax.swing.JPanel {
         lblMensaje.setForeground(error ? java.awt.Color.RED : javax.swing.UIManager.getColor("Label.foreground"));
     }
 
-    // Carga la tabla con las entidades vivas
+     // Carga la tabla con las entidades vivas (con su ícono)
     private void actualizarTabla() {
         Snapshot foto = ventana.getControlador().getSnapshot();
         if (foto == null) {
@@ -279,28 +283,35 @@ public class PanelSimulacion extends javax.swing.JPanel {
         ArrayList<Object[]> filas = new ArrayList<>();
         for (Planta p : foto.getPlantas()) {
             if (p.isViva()) {
-                filas.add(new Object[]{"Planta", p.getNombre(), (int) p.getEnergia(), p.getEdad()});
+                filas.add(new Object[]{iconoPlanta, "Planta", p.getNombre(), (int) p.getEnergia(), p.getEdad()});
             }
         }
         for (Conejo c : foto.getConejos()) {
             if (c.isViva()) {
-                filas.add(new Object[]{"Conejo", c.getNombre(), (int) c.getEnergia(), c.getEdad()});
+                filas.add(new Object[]{iconoConejo, "Conejo", c.getNombre(), (int) c.getEnergia(), c.getEdad()});
             }
         }
         for (Lobo l : foto.getLobos()) {
             if (l.isViva()) {
-                filas.add(new Object[]{"Lobo", l.getNombre(), (int) l.getEnergia(), l.getEdad()});
+                filas.add(new Object[]{iconoLobo, "Lobo", l.getNombre(), (int) l.getEnergia(), l.getEdad()});
             }
         }
         tblEntidades.setModel(crearModeloTabla(filas.toArray(new Object[0][])));
     }
 
+
     private DefaultTableModel crearModeloTabla(Object[][] filas) {
-        String[] columnas = {"Tipo", "Nombre", "Energía", "Edad"};
+        String[] columnas = {"", "Tipo", "Nombre", "Energía", "Edad"};
         return new DefaultTableModel(filas, columnas) {
             @Override
             public boolean isCellEditable(int fila, int columna) {
                 return false;
+            }
+
+            // La primera columna muestra el ícono
+            @Override
+            public Class<?> getColumnClass(int columna) {
+                return (columna == 0) ? javax.swing.Icon.class : Object.class;
             }
         };
     }
@@ -358,6 +369,17 @@ public class PanelSimulacion extends javax.swing.JPanel {
         }
     }
     
+    // Carga un ícono de la carpeta resources y lo escala a 32x32; si falta devuelve null
+    private static javax.swing.ImageIcon cargarIcono(String archivo) {
+    java.net.URL url = PanelSimulacion.class.getResource("/simuladorecosistema/resources/" + archivo);
+    if (url == null) {
+        return null;
+    }
+    javax.swing.ImageIcon iconoOriginal = new javax.swing.ImageIcon(url);
+    // Escala la imagen a 32x32 píxeles con suavizado
+    java.awt.Image imagenEscalada = iconoOriginal.getImage().getScaledInstance(32, 32, java.awt.Image.SCALE_SMOOTH);
+    return new javax.swing.ImageIcon(imagenEscalada);
+}
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregar;
     private javax.swing.JButton btnAvanzar;
